@@ -1,9 +1,10 @@
 package main
 
 import (
+	"tech-challenge-fase-1/internal/adapter/driver/routers"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"tech-challenge-fase-1/internal/adapter/driver/routers"
 )
 
 func main() {

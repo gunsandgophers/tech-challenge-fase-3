@@ -8,4 +8,7 @@ stop:
 	docker compose down
 
 logs/app:
-	docker compose logs -f --no-log-prefix app 
+	docker compose logs -f --no-log-prefix app
+
+migrate/create:
+	docker run -v ./migrations:/migrations --network host migrate/migrate create -ext sql -dir ./migrations $(name)
