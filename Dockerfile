@@ -1,18 +1,24 @@
 FROM golang:1.22
 
+ENV PROJECT_DIR=/app \
+    GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux
+
 WORKDIR /app
 
 # Download Go modules
-COPY ./src ./
+COPY ./src .
 
 RUN go mod download
+RUN go get github.com/githubnemo/CompileDaemon
+RUN go install github.com/githubnemo/CompileDaemon
 
 # Set destination for COPY
 
-RUN mkdir bin
+RUN mkdir build
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o bin/main
+ENTRYPOINT CompileDaemon --build="go build -o build/main" --command=./build/main
 
 # Optional:
 # To bind to a TCP port, runtime parameters must be supplied to the docker command.
@@ -20,6 +26,3 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o bin/main
 # the application is going to listen on by default.
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 8080
-
-# Run
-CMD ["bin/main"]
