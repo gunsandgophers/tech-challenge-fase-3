@@ -8,6 +8,9 @@ import (
 func registerRouters(app *APIApp) {
 	helloController := controllers.NewHelloController()
 	userController := controllers.NewUserController(app.userRepository)
+	customerController := controllers.NewCustomerController(app.customerRepository)
 	app.httpServer.GET("/", helloController.Index)
 	app.httpServer.GET("/users/", userController.Index)
+
+	app.httpServer.GET("/api/v1/customer/:cpf/", customerController.GetCustomer)
 }

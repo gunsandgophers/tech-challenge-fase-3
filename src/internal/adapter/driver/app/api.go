@@ -12,6 +12,7 @@ type APIApp struct {
 	httpServer *gin.Engine
 	connection *database.PGXConnectionAdapter
 	userRepository *repositories.UserRepositoryDB
+	customerRepository *repositories.CustomerRepositoryDB
 }
 
 func NewAPIApp() *APIApp {
