@@ -1,16 +1,17 @@
-package infra
+package repositories
 
 import (
+	"tech-challenge-fase-1/internal/adapter/driven/infra/database"
 	"tech-challenge-fase-1/internal/core/domain/entities"
 	valueobjects "tech-challenge-fase-1/internal/core/domain/value_objects"
 )
 
 type UserRepositoryDB struct {
-	/*conn*/
+	conn database.ConnectionDB
 }
 
-func NewUserRepositoryDB(/*conn*/) *UserRepositoryDB {
-	return &UserRepositoryDB{}
+func NewUserRepositoryDB(conn database.ConnectionDB) *UserRepositoryDB {
+	return &UserRepositoryDB{conn: conn}
 }
 
 func (r *UserRepositoryDB) ListUsers() []*entities.User {

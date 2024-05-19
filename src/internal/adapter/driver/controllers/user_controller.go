@@ -18,7 +18,6 @@ func NewUserController(userRepository repositories.UserRepositoryInterface) *Use
 }
 
 func (uc *UserController) Index(c *gin.Context) {
-
 	listUsers := usecases.NewListUsers(uc.userRepository)
 	users := listUsers.Execute()
 	result := "Users List:"
