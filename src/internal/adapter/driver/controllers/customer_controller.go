@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"tech-challenge-fase-1/internal/core/applications/repositories"
 	usecases "tech-challenge-fase-1/internal/core/applications/use_cases"
+	"tech-challenge-fase-1/internal/core/domain/dtos"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,4 +29,20 @@ func (cc *CustomerController) GetCustomer(c *gin.Context) {
 	}
 	// Aprender a retorna o DTO como JSON
 	c.String(http.StatusOK, "Fouded -> " + customer.Name)
+}
+
+func (cc *CustomerController) InsertCustomer(c *gin.Context) {
+	insertCustomer := usecases.NewInsertCustomer(cc.customerRepository)
+	dto := &dtos.CreateCustomerDTO{
+		Name: "Gabriel",
+		Email: "gabriel1@email.com",
+		Cpf: "98258275054",
+	}
+	customer, err := insertCustomer.Execute(dto)
+	if err != nil {
+		c.String(http.StatusNotAcceptable, err.Error())
+		return
+	}
+	// Aprender a retorna o DTO como JSON
+	c.String(http.StatusOK, "Cliente Cadastrado " + customer.Name + " ID " + customer.Id)
 }

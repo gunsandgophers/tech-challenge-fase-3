@@ -16,9 +16,9 @@ func NewGetCustomer(customerRepository repositories.CustomerRepositoryInterface)
 }
 
 func (gc *GetCustomer) Execute(cpf string) (*dtos.CustomerDTO, error) {
-	customers, err := gc.customerRepository.GetCustomerByCPF(cpf)
+	customer, err := gc.customerRepository.GetCustomerByCPF(cpf)
 	if err != nil {
 		return nil, err
 	}
-	return dtos.NewCustomerDTOFromEntity(customers), nil
+	return dtos.NewCustomerDTOFromEntity(customer), nil
 }

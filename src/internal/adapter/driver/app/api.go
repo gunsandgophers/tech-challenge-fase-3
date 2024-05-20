@@ -11,7 +11,6 @@ import (
 type APIApp struct {
 	httpServer *gin.Engine
 	connection *database.PGXConnectionAdapter
-	userRepository *repositories.UserRepositoryDB
 	customerRepository *repositories.CustomerRepositoryDB
 }
 
@@ -39,7 +38,7 @@ func (app *APIApp) configCors() {
 
 func (app *APIApp) initConnectionDB() {
 	app.connection = database.NewPGXConnectionAdapter()
-	app.userRepository = repositories.NewUserRepositoryDB(app.connection)
+	app.customerRepository = repositories.NewCustomerRepositoryDB(app.connection)
 }
 
 func (app *APIApp) configRoutes() {

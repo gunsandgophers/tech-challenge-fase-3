@@ -9,26 +9,45 @@ import (
 type Customer struct {
 	id    string
 	name  string
-	email string
+	email *valueobjects.Email
 	cpf   *valueobjects.CPF
 }
 
-func CreateCustomer(name string, email string, cpf *valueobjects.CPF) *Customer {
+func CreateCustomer(name string, email string, cpf string) (*Customer, error) {
+	emailVO, err := valueobjects.NewEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	cpfVO, err := valueobjects.NewCPF(cpf)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Customer{
 		id:    uuid.NewString(),
 		name:  name,
-		email: email,
-		cpf:   cpf,
-	}
+		email: emailVO,
+		cpf: cpfVO,
+	}, nil
 }
 
-func RestoreCustomer(id string, name string, email string, cpf *valueobjects.CPF) *Customer {
+func RestoreCustomer(id string, name string, email string, cpf string) (*Customer, error) {
+	emailVO, err := valueobjects.NewEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	cpfVO, err := valueobjects.NewCPF(cpf)
+	if err != nil {
+		return nil, err
+	}
 	return &Customer{
 		id:    id,
 		name:  name,
-		email: email,
-		cpf:   cpf,
-	}
+		email: emailVO,
+		cpf: cpfVO,
+	}, nil
 }
 
 func (c *Customer) GetId() string {
@@ -39,7 +58,7 @@ func (c *Customer) GetName() string {
 	return c.name
 }
 
-func (c *Customer) GetEmail() string {
+func (c *Customer) GetEmail() *valueobjects.Email {
 	return c.email
 }
 
