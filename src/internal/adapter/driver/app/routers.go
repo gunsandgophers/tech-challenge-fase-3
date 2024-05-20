@@ -13,7 +13,9 @@ func registerRouters(app *APIApp) {
 	v1 := app.httpServer.Group(baseUrl)
 	{
 		v1.GET("/", helloController.Index)
-		v1.GET("/customer/inserir/", customerController.InsertCustomer)
+
+		// customer
+		v1.POST("/customer/", customerController.RegisterCustomer)
 		v1.GET("/customer/:cpf/", customerController.GetCustomer)
 	}
 }

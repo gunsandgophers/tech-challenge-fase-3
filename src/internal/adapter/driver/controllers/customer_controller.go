@@ -24,25 +24,31 @@ func (cc *CustomerController) GetCustomer(c *gin.Context) {
 	getCustomer := usecases.NewGetCustomer(cc.customerRepository)
 	customer, err := getCustomer.Execute(cpf)
 	if err != nil {
-		c.String(http.StatusNotFound, "Customer not found")
+		sendError(c, http.StatusNotFound, "Customer not found")
 		return
 	}
-	// Aprender a retorna o DTO como JSON
-	c.String(http.StatusOK, "Fouded -> " + customer.Name)
+	sendSuccess(c, http.StatusOK, "get-customer", customer)
 }
 
-func (cc *CustomerController) InsertCustomer(c *gin.Context) {
-	insertCustomer := usecases.NewInsertCustomer(cc.customerRepository)
-	dto := &dtos.CreateCustomerDTO{
-		Name: "Gabriel",
-		Email: "gabriel1@email.com",
-		Cpf: "98258275054",
-	}
-	customer, err := insertCustomer.Execute(dto)
-	if err != nil {
-		c.String(http.StatusNotAcceptable, err.Error())
+func (cc *CustomerController) RegisterCustomer(c *gin.Context) {
+	request := RegiterCustomerRequest{}
+	c.BindJSON(&request)
+	if err := request.Validate(); err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	// Aprender a retorna o DTO como JSON
-	c.String(http.StatusOK, "Cliente Cadastrado " + customer.Name + " ID " + customer.Id)
+
+	insertCustomer := usecases.NewInsertCustomer(cc.customerRepository)
+	dto := &dtos.CreateCustomerDTO{
+		Name: request.Name,
+		Email: request.Email,
+		Cpf: request.CPF,
+	}
+
+	customer, err := insertCustomer.Execute(dto)
+	if err != nil {
+		sendError(c, http.StatusNotAcceptable, err.Error())
+		return
+	}
+	sendSuccess(c, http.StatusCreated, "register-customer", customer)
 }

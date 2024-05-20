@@ -3,6 +3,7 @@ package usecases
 import (
 	"tech-challenge-fase-1/internal/core/applications/repositories"
 	"tech-challenge-fase-1/internal/core/domain/dtos"
+	valueobjects "tech-challenge-fase-1/internal/core/domain/value_objects"
 )
 
 type GetCustomer struct {
@@ -16,7 +17,11 @@ func NewGetCustomer(customerRepository repositories.CustomerRepositoryInterface)
 }
 
 func (gc *GetCustomer) Execute(cpf string) (*dtos.CustomerDTO, error) {
-	customer, err := gc.customerRepository.GetCustomerByCPF(cpf)
+	cpfVO, err := valueobjects.NewCPF(cpf)
+	if err != nil {
+		return nil, err
+	}
+	customer, err := gc.customerRepository.GetCustomerByCPF(cpfVO)
 	if err != nil {
 		return nil, err
 	}

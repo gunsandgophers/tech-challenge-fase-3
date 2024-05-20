@@ -1,9 +1,9 @@
 package repositories
 
 import (
-	"errors"
 	"tech-challenge-fase-1/internal/adapter/driven/infra/database"
 	"tech-challenge-fase-1/internal/core/domain/entities"
+	valueobjects "tech-challenge-fase-1/internal/core/domain/value_objects"
 )
 
 type CustomerRepositoryDB struct {
@@ -14,8 +14,16 @@ func NewCustomerRepositoryDB(conn database.ConnectionDB) *CustomerRepositoryDB {
 	return &CustomerRepositoryDB{conn: conn}
 }
 
-func (r *CustomerRepositoryDB) GetCustomerByCPF(cpf string) (*entities.Customer, error) {
-	return nil, errors.New("NotFound")
+func (r *CustomerRepositoryDB) GetCustomerByCPF(cpf *valueobjects.CPF) (*entities.Customer, error) {
+	sql := "SELECT id, name, email, cpf FROM customer WHERE cpf = $1"
+	row := r.conn.QueryRow(sql, cpf.Value())
+	return r.toEntity(row)
+}
+
+func (r *CustomerRepositoryDB) GetCustomerByEmail(email *valueobjects.Email) (*entities.Customer, error) {
+	sql := "SELECT id, name, email, cpf FROM customer WHERE email = $1"
+	row := r.conn.QueryRow(sql, email.Value())
+	return r.toEntity(row)
 }
 
 func (r *CustomerRepositoryDB) Insert(customer *entities.Customer) error {
@@ -27,4 +35,17 @@ func (r *CustomerRepositoryDB) Insert(customer *entities.Customer) error {
 		customer.GetEmail().Value(),
 		customer.GetCPF().Value(),
 	);
+}
+
+func (r *CustomerRepositoryDB) toEntity(row database.RowDB) (*entities.Customer, error) {
+	var id string
+	var name string
+	var email string
+	var cpf string
+
+	if err := row.Scan(&id, &name, &email, &cpf); err != nil {
+		return nil, err
+	}
+
+	return entities.RestoreCustomer(id, name, email, cpf)
 }

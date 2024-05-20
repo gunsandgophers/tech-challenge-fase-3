@@ -3,10 +3,10 @@ package dtos
 import "tech-challenge-fase-1/internal/core/domain/entities"
 
 type CustomerDTO struct {
-	Id string
-	Name string
-	Email string
-	Cpf string
+	Id    string `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
+	Cpf   string `json:"cpf,omitempty"`
 }
 
 func NewCustomerDTOFromEntity(customer *entities.Customer) *CustomerDTO {
