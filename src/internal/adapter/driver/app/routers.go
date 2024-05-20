@@ -14,6 +14,6 @@ func registerRouters(app *APIApp) {
 	{
 		v1.GET("/", helloController.Index)
 		v1.GET("/customer/inserir/", customerController.InsertCustomer)
-		// v1.GET("/customer/:cpf/", customerController.GetCustomer)
+		v1.GET("/customer/:cpf/", customerController.GetCustomer)
 	}
 }
