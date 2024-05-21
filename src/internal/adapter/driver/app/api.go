@@ -2,16 +2,16 @@ package app
 
 import (
 	"tech-challenge-fase-1/internal/adapter/driven/infra/database"
+	httpserver "tech-challenge-fase-1/internal/adapter/driven/infra/http"
 	"tech-challenge-fase-1/internal/adapter/driven/infra/repositories"
 
 	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
 type APIApp struct {
-	httpServer *gin.Engine
+	httpServer *httpserver.GinHTTPServerAdapter
 	connection *database.PGXConnectionAdapter
-	userRepository *repositories.UserRepositoryDB
+	customerRepository *repositories.CustomerRepositoryDB
 }
 
 func NewAPIApp() *APIApp {
@@ -24,7 +24,7 @@ func NewAPIApp() *APIApp {
 }
 
 func (app *APIApp) initGin() {
-	app.httpServer = gin.Default()
+	app.httpServer = httpserver.NewGinHTTPServerAdapter()
 	app.httpServer.SetTrustedProxies(nil)
 }
 
@@ -33,12 +33,12 @@ func (app *APIApp) configCors() {
 	config.AllowOrigins = []string{"*"}
 	config.AllowMethods = []string{"*"}
 	config.AllowHeaders = []string{"Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"}
-	app.httpServer.Use(cors.New(config))
+	app.httpServer.Engine.Use(cors.New(config))
 }
 
 func (app *APIApp) initConnectionDB() {
 	app.connection = database.NewPGXConnectionAdapter()
-	app.userRepository = repositories.NewUserRepositoryDB(app.connection)
+	app.customerRepository = repositories.NewCustomerRepositoryDB(app.connection)
 }
 
 func (app *APIApp) configRoutes() {

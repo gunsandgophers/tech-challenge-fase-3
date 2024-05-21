@@ -7,7 +7,13 @@ import (
 // Registra as rotas dos controllers
 func registerRouters(app *APIApp) {
 	helloController := controllers.NewHelloController()
-	userController := controllers.NewUserController(app.userRepository)
+	customerController := controllers.NewCustomerController(app.customerRepository)
+
+	baseUrl := "/api/v1"
+	app.httpServer.SetBasePath(baseUrl)
 	app.httpServer.GET("/", helloController.Index)
-	app.httpServer.GET("/users/", userController.Index)
+
+	//customer
+	app.httpServer.POST("/customer/", customerController.RegisterCustomer)
+	app.httpServer.GET("/customer/:cpf/", customerController.GetCustomer)
 }
