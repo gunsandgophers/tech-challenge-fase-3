@@ -2,21 +2,20 @@ package controllers
 
 import (
 	"fmt"
-
-	"github.com/gin-gonic/gin"
+	httpserver "tech-challenge-fase-1/internal/adapter/driven/infra/http"
 )
 
-func sendError(ctx *gin.Context, code int, msg string) {
+func sendError(ctx httpserver.HTTPContext, code int, msg string) {
 	ctx.Header("Content-type", "application/json")
-	ctx.JSON(code, gin.H{
+	ctx.JSON(code, httpserver.Payload{
 		"message":   msg,
 		"errorCode": code,
 	})
 }
 
-func sendSuccess(ctx *gin.Context, code int, op string, data interface{}) {
+func sendSuccess(ctx httpserver.HTTPContext, code int, op string, data interface{}) {
 	ctx.Header("Content-type", "application/json")
-	ctx.JSON(code, gin.H{
+	ctx.JSON(code, httpserver.Payload{
 		"message": fmt.Sprintf("operation: %s successfull", op),
 		"data":    data,
 	})

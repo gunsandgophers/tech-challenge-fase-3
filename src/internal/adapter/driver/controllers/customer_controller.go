@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"net/http"
+	httpserver "tech-challenge-fase-1/internal/adapter/driven/infra/http"
 	"tech-challenge-fase-1/internal/core/applications/repositories"
 	usecases "tech-challenge-fase-1/internal/core/applications/use_cases"
 	"tech-challenge-fase-1/internal/core/domain/dtos"
-
-	"github.com/gin-gonic/gin"
 )
 
 type CustomerController struct {
@@ -19,7 +18,7 @@ func NewCustomerController(customerRepository repositories.CustomerRepositoryInt
 	};
 }
 
-func (cc *CustomerController) GetCustomer(c *gin.Context) {
+func (cc *CustomerController) GetCustomer(c httpserver.HTTPContext) {
 	cpf := c.Param("cpf")
 	getCustomer := usecases.NewGetCustomer(cc.customerRepository)
 	customer, err := getCustomer.Execute(cpf)
@@ -30,7 +29,7 @@ func (cc *CustomerController) GetCustomer(c *gin.Context) {
 	sendSuccess(c, http.StatusOK, "get-customer", customer)
 }
 
-func (cc *CustomerController) RegisterCustomer(c *gin.Context) {
+func (cc *CustomerController) RegisterCustomer(c httpserver.HTTPContext) {
 	request := RegiterCustomerRequest{}
 	c.BindJSON(&request)
 	if err := request.Validate(); err != nil {

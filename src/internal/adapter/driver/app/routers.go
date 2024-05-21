@@ -10,12 +10,10 @@ func registerRouters(app *APIApp) {
 	customerController := controllers.NewCustomerController(app.customerRepository)
 
 	baseUrl := "/api/v1"
-	v1 := app.httpServer.Group(baseUrl)
-	{
-		v1.GET("/", helloController.Index)
+	app.httpServer.SetBasePath(baseUrl)
+	app.httpServer.GET("/", helloController.Index)
 
-		// customer
-		v1.POST("/customer/", customerController.RegisterCustomer)
-		v1.GET("/customer/:cpf/", customerController.GetCustomer)
-	}
+	//customer
+	app.httpServer.POST("/customer/", customerController.RegisterCustomer)
+	app.httpServer.GET("/customer/:cpf/", customerController.GetCustomer)
 }
