@@ -9,9 +9,10 @@ import (
 )
 
 type APIApp struct {
-	httpServer *httpserver.GinHTTPServerAdapter
-	connection *database.PGXConnectionAdapter
+	httpServer         *httpserver.GinHTTPServerAdapter
+	connection         *database.PGXConnectionAdapter
 	customerRepository *repositories.CustomerRepositoryDB
+	productRepository  *repositories.ProductRepositoryDB
 }
 
 func NewAPIApp() *APIApp {
@@ -39,6 +40,7 @@ func (app *APIApp) configCors() {
 func (app *APIApp) initConnectionDB() {
 	app.connection = database.NewPGXConnectionAdapter()
 	app.customerRepository = repositories.NewCustomerRepositoryDB(app.connection)
+	app.productRepository = repositories.NewProductRepositoryDB(app.connection)
 }
 
 func (app *APIApp) configRoutes() {
