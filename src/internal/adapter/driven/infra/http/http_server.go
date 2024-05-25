@@ -19,6 +19,7 @@ type HTTPContext interface {
 	JSON(code int, obj any)
 	BindJSON(obj any) error
 	Param(key string) string
+	DefaultQuery(key, defaultValue string) string
 }
 
 type HTTPHandlerFunc func(HTTPContext)

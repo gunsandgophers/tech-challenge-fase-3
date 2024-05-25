@@ -15,7 +15,7 @@ type CustomerController struct {
 func NewCustomerController(customerRepository repositories.CustomerRepositoryInterface) *CustomerController {
 	return &CustomerController{
 		customerRepository: customerRepository,
-	};
+	}
 }
 
 func (cc *CustomerController) GetCustomer(c httpserver.HTTPContext) {
@@ -39,9 +39,9 @@ func (cc *CustomerController) RegisterCustomer(c httpserver.HTTPContext) {
 
 	insertCustomer := usecases.NewInsertCustomer(cc.customerRepository)
 	dto := &dtos.CreateCustomerDTO{
-		Name: request.Name,
+		Name:  request.Name,
 		Email: request.Email,
-		Cpf: request.CPF,
+		Cpf:   request.CPF,
 	}
 
 	customer, err := insertCustomer.Execute(dto)
