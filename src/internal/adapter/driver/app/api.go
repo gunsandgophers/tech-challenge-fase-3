@@ -2,8 +2,10 @@ package app
 
 import (
 	"tech-challenge-fase-1/internal/adapter/driven/infra/database"
+	"tech-challenge-fase-1/internal/adapter/driven/infra/events"
 	httpserver "tech-challenge-fase-1/internal/adapter/driven/infra/http"
 	"tech-challenge-fase-1/internal/adapter/driven/infra/repositories"
+	"tech-challenge-fase-1/internal/adapter/driven/infra/services"
 
 	"github.com/gin-contrib/cors"
 )
@@ -13,6 +15,11 @@ type APIApp struct {
 	connection         *database.PGXConnectionAdapter
 	customerRepository *repositories.CustomerRepositoryDB
 	productRepository  *repositories.ProductRepositoryDB
+	orderRepository    *repositories.OrderRepositoryDB
+
+	mercadoPagoGateway *services.MercadoPagoGateway
+
+	eventManager *events.EventManager
 }
 
 func NewAPIApp() *APIApp {
@@ -39,8 +46,14 @@ func (app *APIApp) configCors() {
 
 func (app *APIApp) initConnectionDB() {
 	app.connection = database.NewPGXConnectionAdapter()
+
 	app.customerRepository = repositories.NewCustomerRepositoryDB(app.connection)
 	app.productRepository = repositories.NewProductRepositoryDB(app.connection)
+	app.orderRepository = repositories.NewOrderRepositoryDB(app.connection)
+
+	app.eventManager = events.NewEventManager()
+
+	app.mercadoPagoGateway = services.NewMercadoPagoGateway(app.eventManager)
 }
 
 func (app *APIApp) configRoutes() {

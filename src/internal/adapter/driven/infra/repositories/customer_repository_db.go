@@ -27,14 +27,14 @@ func (r *CustomerRepositoryDB) GetCustomerByEmail(email *valueobjects.Email) (*e
 }
 
 func (r *CustomerRepositoryDB) Insert(customer *entities.Customer) error {
-	sql := "INSERT INTO customer(id, name, email, cpf) VALUES($1, $2, $3, $4)";
+	sql := "INSERT INTO customer(id, name, email, cpf) VALUES($1, $2, $3, $4)"
 	return r.conn.Exec(
 		sql,
 		customer.GetId(),
 		customer.GetName(),
 		customer.GetEmail().Value(),
 		customer.GetCPF().Value(),
-	);
+	)
 }
 
 func (r *CustomerRepositoryDB) toEntity(row database.RowDB) (*entities.Customer, error) {
@@ -48,4 +48,19 @@ func (r *CustomerRepositoryDB) toEntity(row database.RowDB) (*entities.Customer,
 	}
 
 	return entities.RestoreCustomer(id, name, email, cpf)
+}
+
+func (r *CustomerRepositoryDB) GetCustomerByID(id *string) (*entities.Customer, error) {
+	sql := "SELECT id, name, email, cpf FROM customer WHERE id = $1"
+	row := r.conn.QueryRow(sql, id)
+
+	customer, err := r.toEntity(row)
+
+	if err != nil {
+		if err.Error() == ErrNotFound {
+			return nil, ErrCustomerNotFound
+		}
+		return nil, err
+	}
+	return customer, nil
 }
