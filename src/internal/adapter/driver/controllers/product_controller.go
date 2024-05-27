@@ -8,8 +8,6 @@ import (
 	usecases "tech-challenge-fase-1/internal/core/applications/use_cases"
 	"tech-challenge-fase-1/internal/core/domain/dtos"
 	"tech-challenge-fase-1/internal/core/domain/errors"
-
-	"github.com/gin-gonic/gin"
 )
 
 type ProductController struct {
@@ -59,12 +57,12 @@ func (pc *ProductController) CreateProduct(c httpserver.HTTPContext) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusInternalServerError, httpserver.Payload{
 			"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
+	c.JSON(http.StatusCreated, httpserver.Payload{
 		"product": respProduct,
 	})
 
@@ -84,14 +82,14 @@ func (pc *ProductController) CreateProduct(c httpserver.HTTPContext) {
 func (pc *ProductController) UpdateProduct(c httpserver.HTTPContext) {
 	var product ProductRequest
 	if err := c.BindJSON(&product); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusBadRequest, httpserver.Payload{
 			"error": err.Error()})
 		return
 	}
 
 	ID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusBadRequest, httpserver.Payload{
 			"error": err.Error()})
 		return
 	}
@@ -106,12 +104,12 @@ func (pc *ProductController) UpdateProduct(c httpserver.HTTPContext) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusInternalServerError, httpserver.Payload{
 			"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, httpserver.Payload{
 		"product": respProduct,
 	})
 }
@@ -130,19 +128,19 @@ func (pc *ProductController) UpdateProduct(c httpserver.HTTPContext) {
 func (pc *ProductController) DeleteProduct(c httpserver.HTTPContext) {
 	ID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusBadRequest, httpserver.Payload{
 			"error": err.Error()})
 		return
 	}
 
 	err = usecases.NewDeleteProductUseCase(pc.productRepository).Execute(ID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusInternalServerError, httpserver.Payload{
 			"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, httpserver.Payload{
 		"message": "Product deleted successfully",
 	})
 }
@@ -162,7 +160,7 @@ func (pc *ProductController) ListProductsByCategory(c httpserver.HTTPContext) {
 	category := c.Param("category")
 
 	if _, ok := errors.ValidCategories[category]; !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusBadRequest, httpserver.Payload{
 			"error": errors.ErrInvalidCategory.Error()})
 		return
 	}
@@ -172,12 +170,12 @@ func (pc *ProductController) ListProductsByCategory(c httpserver.HTTPContext) {
 
 	products, err := usecases.NewListProductsByCategoryUseCase(pc.productRepository).Execute(category, page, size)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusInternalServerError, httpserver.Payload{
 			"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, httpserver.Payload{
 		"products": products,
 	})
 }
