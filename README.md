@@ -30,7 +30,7 @@ to create a migration to add a user
 
 #### Testing
 
-To test using swagger, just site this down `/swagger/index.html` to give it a go.
+To test using swagger, just site this down `api/v1/swagger/index.html` to give it a go.
 
 #### Rebuilding
 
