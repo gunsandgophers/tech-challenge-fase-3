@@ -18,6 +18,16 @@ func NewCustomerController(customerRepository repositories.CustomerRepositoryInt
 	}
 }
 
+// GetCustomer godoc
+// @Summary      Show a customer
+// @Description  get the customer by CPF
+// @Tags         customers
+// @Accept       json
+// @Produce      json
+// @Param        cpf   path      string  true  "Customer CPF"
+// @Success      200  {object}  dtos.CustomerDTO
+// @Failure      404 {string} string "when object not found"
+// @Router       /customer/{cpf}/ [get]
 func (cc *CustomerController) GetCustomer(c httpserver.HTTPContext) {
 	cpf := c.Param("cpf")
 	getCustomer := usecases.NewGetCustomer(cc.customerRepository)
@@ -29,6 +39,17 @@ func (cc *CustomerController) GetCustomer(c httpserver.HTTPContext) {
 	sendSuccess(c, http.StatusOK, "get-customer", customer)
 }
 
+// RegisterCustomer godoc
+// @Summary      Create a customer
+// @Description  register the customer information
+// @Tags         customers
+// @Accept       json
+// @Produce      json
+// @Param        customer   body      dtos.CreateCustomerDTO  true  "Insert Customer"
+// @Success      200  {object}  dtos.CustomerDTO
+// @Failure      400 {string} string "when invalid params"
+// @Failure      406 {string} string "when invalid status"
+// @Router       /customer/ [post]
 func (cc *CustomerController) RegisterCustomer(c httpserver.HTTPContext) {
 	request := RegiterCustomerRequest{}
 	c.BindJSON(&request)

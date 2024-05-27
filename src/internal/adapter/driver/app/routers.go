@@ -2,6 +2,9 @@ package app
 
 import (
 	"tech-challenge-fase-1/internal/adapter/driver/controllers"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // Registra as rotas dos controllers
@@ -36,4 +39,5 @@ func registerRouters(app *APIApp) {
 	app.httpServer.POST("/order/:order_id/add/item", orderController.AddOrderItem)
 	app.httpServer.POST("/order/:order_id/checkout", orderController.Checkout)
 
+	app.httpServer.SetSwagger("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
