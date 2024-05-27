@@ -1,0 +1,360 @@
+basePath: /api/v1
+definitions:
+  controllers.ProductRequest:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  dtos.CheckoutDTO:
+    properties:
+      amount:
+        type: number
+      method:
+        $ref: '#/definitions/dtos.MethodType'
+      paymentLink:
+        type: string
+    type: object
+  dtos.CreateCustomerDTO:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  dtos.CustomerDTO:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  dtos.MethodType:
+    enum:
+    - PIX
+    - CREDIT_CARD
+    type: string
+    x-enum-varnames:
+    - PIX
+    - CREDIT_CARD
+  dtos.OrderDTO:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dtos.OrderItemDTO'
+        type: array
+      order_id:
+        type: string
+      status:
+        type: string
+      total:
+        type: number
+    type: object
+  dtos.OrderItemDTO:
+    properties:
+      amount:
+        type: number
+      product_name:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  dtos.ProductDTO:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  request.OpenOrderRequest:
+    properties:
+      customer_id:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: get index payload
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Show the index payload
+      tags:
+      - index
+  /customer/:
+    post:
+      consumes:
+      - application/json
+      description: register the customer information
+      parameters:
+      - description: Insert Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateCustomerDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CustomerDTO'
+        "400":
+          description: when invalid params
+          schema:
+            type: string
+        "406":
+          description: when invalid status
+          schema:
+            type: string
+      summary: Create a customer
+      tags:
+      - customers
+  /customer/{cpf}/:
+    get:
+      consumes:
+      - application/json
+      description: get the customer by CPF
+      parameters:
+      - description: Customer CPF
+        in: path
+        name: cpf
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CustomerDTO'
+        "404":
+          description: when object not found
+          schema:
+            type: string
+      summary: Show a customer
+      tags:
+      - customers
+  /order/{order_id}/add/item:
+    post:
+      consumes:
+      - application/json
+      description: do a checkout on a given order
+      parameters:
+      - description: Open Order
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CheckoutDTO'
+        "400":
+          description: when invalid status
+          schema:
+            type: string
+      summary: Do a order checkout
+      tags:
+      - orders
+  /order/open/:
+    post:
+      consumes:
+      - application/json
+      description: initiate the order process
+      parameters:
+      - description: Open Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.OpenOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.OrderDTO'
+        "400":
+          description: when invalid params
+          schema:
+            type: string
+        "406":
+          description: when invalid status
+          schema:
+            type: string
+      summary: Open an order
+      tags:
+      - orders
+  /product/:
+    post:
+      consumes:
+      - application/json
+      description: register the product information
+      parameters:
+      - description: Insert Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ProductDTO'
+        "400":
+          description: when invalid params
+          schema:
+            type: string
+        "500":
+          description: when create process error
+          schema:
+            type: string
+      summary: Create a product
+      tags:
+      - products
+  /product/{category}/:
+    get:
+      consumes:
+      - application/json
+      description: List a set of products information over followed categories
+      parameters:
+      - description: List Product By Category
+        in: path
+        name: category
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ProductDTO'
+            type: array
+        "400":
+          description: when invalid params
+          schema:
+            type: string
+        "500":
+          description: when list process error
+          schema:
+            type: string
+      summary: List products
+      tags:
+      - products
+  /product/{id}/:
+    delete:
+      consumes:
+      - application/json
+      description: remove the product information
+      parameters:
+      - description: Delete Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: when invalid params
+          schema:
+            type: string
+        "500":
+          description: when delete process error
+          schema:
+            type: string
+      summary: Delete a product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: change the product information
+      parameters:
+      - description: Update Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ProductDTO'
+        "400":
+          description: when invalid params
+          schema:
+            type: string
+        "500":
+          description: when update process error
+          schema:
+            type: string
+      summary: Update a product
+      tags:
+      - products
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

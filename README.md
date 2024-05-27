@@ -25,3 +25,13 @@ make migrate/create name=add_user
 ```
 
 to create a migration to add a user
+
+### Swagger
+
+#### Testing
+
+To test using swagger, just site this down `api/v1/swagger/index.html` to give it a go.
+
+#### Rebuilding
+
+Instead the needing to rebuild the swagger documentation, install the swaggo package ant type `swag init` then documentation rebuilt.

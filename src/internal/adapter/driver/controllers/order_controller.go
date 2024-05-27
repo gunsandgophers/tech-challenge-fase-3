@@ -36,6 +36,17 @@ func NewOrderController(
 	}
 }
 
+// OpenOrder godoc
+// @Summary      Open an order
+// @Description  initiate the order process
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Param        order   body      request.OpenOrderRequest  true  "Open Order"
+// @Success      200 {object} dtos.OrderDTO
+// @Failure      400 {string} string "when invalid params"
+// @Failure      406 {string} string "when invalid status"
+// @Router       /order/open/ [post]
 func (cc *OrderController) OpenOrder(c httpserver.HTTPContext) {
 
 	request := request.OpenOrderRequest{}
@@ -54,13 +65,26 @@ func (cc *OrderController) OpenOrder(c httpserver.HTTPContext) {
 	order, err := openOrderUseCase.Execute(request.CustomerID)
 
 	if err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
+		sendError(c, http.StatusNotAcceptable, err.Error())
 		return
 	}
 
 	sendSuccess(c, http.StatusCreated, "open-order", order)
 }
 
+// AddOrderItem godoc
+// @Summary      Add an order item
+// @Description  insert an item to a given order
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Param        order_id   path      string true  "Open Order"
+// @Param        product_id   body      int  true  "Open Order"
+// @Param        quantity   body      int  true  "Open Order"
+// @Success      200 {object} dtos.OrderDTO
+// @Failure      400 {string} string "when invalid params"
+// @Failure      406 {string} string "when invalid status"
+// @Router       /order/{order_id}/add/item [post]
 func (cc *OrderController) AddOrderItem(c httpserver.HTTPContext) {
 
 	request := request.AddOrderItemRequest{}
@@ -85,13 +109,23 @@ func (cc *OrderController) AddOrderItem(c httpserver.HTTPContext) {
 	})
 
 	if err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
+		sendError(c, http.StatusNotAcceptable, err.Error())
 		return
 	}
 
 	sendSuccess(c, http.StatusCreated, "add-order-item", order)
 }
 
+// Checkout godoc
+// @Summary      Do a order checkout
+// @Description  do a checkout on a given order
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Param        order_id   path      string  true  "Open Order"
+// @Success      200 {object} dtos.CheckoutDTO
+// @Failure      400 {string} string "when invalid status"
+// @Router       /order/{order_id}/add/item [post]
 func (cc *OrderController) Checkout(c httpserver.HTTPContext) {
 
 	orderID := c.Param("order_id")
@@ -103,7 +137,7 @@ func (cc *OrderController) Checkout(c httpserver.HTTPContext) {
 
 	checkout, err := checkoutUseCase.Execute(orderID)
 	if err != nil {
-		sendError(c, 400, err.Error())
+		sendError(c, http.StatusNotAcceptable, err.Error())
 		return
 	}
 
