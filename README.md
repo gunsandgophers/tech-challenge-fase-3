@@ -4,6 +4,10 @@ Tech Challenge Fase 1...
 
 Let's go tech challenge!!!
 
+Links:
+
+<https://miro.com/app/board/uXjVKQtHwOA=/>
+
 ## Run project
 
 To run the application it is necessary to execute the command `make start`
