@@ -6,7 +6,7 @@ Let's go tech challenge!!!
 
 ## Run project
 
- TODO
+To run the application it is necessary to execute the command `make start`
 
 ### Aplication
 
@@ -27,6 +27,8 @@ make migrate/create name=add_user
 to create a migration to add a user
 
 ### Swagger
+
+URL to access Swagger is <http://localhost:80>
 
 #### Testing
 
