@@ -32,7 +32,7 @@ to create a migration to add a user
 
 ### Swagger
 
-URL to access Swagger is <http://localhost:80>
+URL to access Swagger is <http://localhost:3003/api/v1/swagger/index.html>
 
 #### Testing
 
