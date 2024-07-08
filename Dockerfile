@@ -8,15 +8,11 @@ ENV PROJECT_DIR=/app \
 WORKDIR /app
 
 # Download Go modules
-COPY ./src .
+COPY . .
 
 RUN go mod download
 RUN go get github.com/githubnemo/CompileDaemon
 RUN go install github.com/githubnemo/CompileDaemon
-
-# Set destination for COPY
-
-RUN mkdir build
 
 ENTRYPOINT CompileDaemon --build="go build -o build/main" --command=./build/main
 

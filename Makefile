@@ -12,3 +12,6 @@ logs/app:
 
 migrate/create:
 	docker run -v ./migrations:/migrations --network host migrate/migrate create -ext sql -dir ./migrations $(name)
+
+swagger:
+	docker run --rm -v ./:/code ghcr.io/swaggo/swag:latest init

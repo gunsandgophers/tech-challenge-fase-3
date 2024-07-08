@@ -7,8 +7,7 @@ services:
     ports:
       - "3003:8080"
     volumes:
-      - ./src:/app
-      - ./build:/app/build
+      - ./:/app
     command: go run main.go
     depends_on:
       db:
@@ -60,13 +59,3 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  swagger-ui:
-    image: swaggerapi/swagger-ui
-    restart: always
-    container_name: "swagger-ui"
-    ports:
-      - "80:8080"
-    volumes:
-      - ./src/docs/swagger.yaml:/swagger.yaml
-    environment:
-      SWAGGER_JSON: /swagger.yaml
