@@ -2,7 +2,7 @@ package main
 
 import (
 	_ "tech-challenge-fase-1/docs"
-	"tech-challenge-fase-1/internal/adapter/driver/app"
+	"tech-challenge-fase-1/internal/infra/app"
 )
 
 // @title           Swagger Example API
