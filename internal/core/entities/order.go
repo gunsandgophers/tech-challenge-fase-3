@@ -1,8 +1,9 @@
 package entities
 
 import (
-	"log"
 	valueobjects "tech-challenge-fase-1/internal/core/value_objects"
+
+	"github.com/google/uuid"
 )
 
 type OrderStatus string
@@ -12,71 +13,82 @@ func (s OrderStatus) String() string {
 }
 
 const (
-	Pending          OrderStatus = "PENDING"
-	Paid             OrderStatus = "PAID"
-	Rejected         OrderStatus = "REJECTED"
+	PENDING          OrderStatus = "PENDING"
+	PAID             OrderStatus = "PAID"
+	REJECTED         OrderStatus = "REJECTED"
 	AWAITING_PAYMENT OrderStatus = "AWAITING_PAYMENT"
 )
 
 type Order struct {
-	ID     string
-	Items  valueobjects.OrderItems
-	Status OrderStatus
+	id     string
+	customerId string
+	items  []*valueobjects.OrderItem
+	status OrderStatus
 }
 
-func NewOrder(id string, items valueobjects.OrderItems, status OrderStatus) *Order {
-
-	return &Order{ID: id, Items: items, Status: status}
+func CreateOpenOrder(customerId string) *Order {
+	return RestoreOrder(
+		uuid.NewString(),
+		customerId,
+		make([]*valueobjects.OrderItem, 0),
+		PENDING,
+	)
 }
 
-func (o *Order) GetID() string {
-	return o.ID
+func RestoreOrder(id string, customerId string, items []*valueobjects.OrderItem, status OrderStatus) *Order {
+	return &Order{
+		id: id,
+		customerId: customerId,
+		items: items,
+		status: status,
+	}
 }
 
-func (o *Order) GetItems() valueobjects.OrderItems {
-	return o.Items
+func (o *Order) GetId() string {
+	return o.id
+}
+
+func (o *Order) GetCustomerId() string {
+	return o.customerId
+}
+
+func (o *Order) GetItems() []*valueobjects.OrderItem {
+	return o.items
 }
 
 func (o *Order) GetStatus() OrderStatus {
-	return o.Status
+	return o.status
 }
 
-func (o *Order) GetTotal() *int64 {
+func (o *Order) SetStatus(status OrderStatus) {
+	o.status = status
+}
+
+func (o *Order) GetTotal() int64 {
 	var total int64
-
-	for _, item := range o.Items {
-		total = total + *item.GetTotal()
+	for _, item := range o.items {
+		total = total + item.GetTotal()
 	}
-
-	return &total
+	return total
 }
 
-func (o *Order) AddItem(product *Product, quantity *int) {
+func (o *Order) FindOrderItem(productName string) *valueobjects.OrderItem {
+	for _, item := range o.items {
+		if item.GetProductName() == productName {
+			return item
+		}
+	}
+	return nil
+}
+
+func (o *Order) AddItem(product *Product, quantity int) {
 	amount := int64(product.GetPrice() * 100)
 	productName := product.GetName()
-
-	equal := false
-	for index, item := range o.Items {
-
-		log.Println(*item.GetProductName() == product.Name)
-		if *item.GetProductName() == product.Name {
-
-			quantity := *item.Quantity + *quantity
-			item.Quantity = &quantity
-
-			o.Items[index] = item
-			equal = true
-			break
-		}
-
+	item := o.FindOrderItem(productName)
+	if item == nil {
+		item = valueobjects.NewOrderItem(amount, 0, productName)
+		o.items = append(o.items, item)
 	}
-
-	if !equal {
-		o.Items = append(o.Items, valueobjects.OrderItem{
-			Amount:      &amount,
-			ProductName: &productName,
-			Quantity:    quantity,
-		})
-	}
-
+	quantity = item.GetQuantity() + quantity
+	item.SetQuatity(quantity)
 }

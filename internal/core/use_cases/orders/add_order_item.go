@@ -27,20 +27,15 @@ func NewAddOrderItemUseCase(
 }
 
 func (co *AddOrderItemUseCase) Execute(request *AddOrderItemUseCaseRequest) (*dtos.OrderDTO, error) {
-
-	product, err := co.productRepository.FindByID(request.ProductID)
-
+	_, err := co.productRepository.FindByID(request.ProductID)
 	if err != nil {
 		return nil, err
 	}
-
 	order, err := co.orderRepository.FindByID(&request.OrderID)
 	if err != nil {
 		return nil, err
 	}
-
-	order.AddItem(product, &request.Quantity)
-
-	return dtos.NewAddOrderItemDTOFromEntity(order), co.orderRepository.AddOrderItem(order)
-
+	return dtos.NewOrderDTOFromEntity(order), nil
+	// order.AddItem(product, &request.Quantity)
+	// return dtos.NewAddOrderItemDTOFromEntity(order), co.orderRepository.AddOrderItem(order)
 }

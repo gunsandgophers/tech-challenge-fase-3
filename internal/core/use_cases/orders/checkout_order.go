@@ -33,24 +33,24 @@ func (c *CheckoutOrderUseCase) Execute(orderID string) (*dtos.CheckoutDTO, error
 		return nil, err
 	}
 
-	order.Status = entities.AWAITING_PAYMENT
+	order.SetStatus(entities.AWAITING_PAYMENT)
 
 	checkout, err := c.paymentGateway.Execute(dtos.NewOrderDTOFromEntity(order), dtos.PIX)
 	if err != nil {
 		return nil, err
 	}
 
-	err = c.orderRepository.UpdateStatus(order)
-	if err != nil {
-		return nil, err
-	}
-
-	go func() {
-		c.commandEventManager.Add("paid_out", func() {
-			order.Status = entities.Paid
-			c.orderRepository.UpdateStatus(order)
-		})
-	}()
+	// err = c.orderRepository.UpdateStatus(order)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	//
+	// go func() {
+	// 	c.commandEventManager.Add("paid_out", func() {
+	// 		order.SetStatus(entities.PAID)
+	// 		c.orderRepository.UpdateStatus(order)
+	// 	})
+	// }()
 
 	return checkout, nil
 }

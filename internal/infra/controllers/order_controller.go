@@ -62,7 +62,7 @@ func (cc *OrderController) OpenOrder(c httpserver.HTTPContext) {
 		cc.customerRepository,
 	)
 
-	order, err := openOrderUseCase.Execute(request.CustomerID)
+	order, err := openOrderUseCase.Execute(*request.CustomerID)
 
 	if err != nil {
 		sendError(c, http.StatusNotAcceptable, err.Error())
