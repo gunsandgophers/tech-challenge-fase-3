@@ -11,7 +11,7 @@ type ProductDTO struct {
 	Image       string
 }
 
-func ConvertProductEntityToDTO(product *entities.Product) *ProductDTO {
+func NewProductDTOFromEntity(product *entities.Product) *ProductDTO {
 	return &ProductDTO{
 		ID:          product.GetID(),
 		Name:        product.GetName(),

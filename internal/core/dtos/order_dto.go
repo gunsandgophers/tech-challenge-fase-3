@@ -22,9 +22,7 @@ func NewOpenOrderDTOFromEntity(order *entities.Order) *OrderDTO {
 }
 
 func NewOrderDTOFromEntity(order *entities.Order) *OrderDTO {
-
 	orderItems := []OrderItemDTO{}
-
 	for _, item := range order.GetItems() {
 		orderItems = append(orderItems, OrderItemDTO{
 			Amount:      float64(*item.GetAmount()) / 100,
@@ -32,7 +30,6 @@ func NewOrderDTOFromEntity(order *entities.Order) *OrderDTO {
 			ProductName: *item.GetProductName(),
 		})
 	}
-
 	return &OrderDTO{
 		ID:     order.GetID(),
 		Items:  orderItems,

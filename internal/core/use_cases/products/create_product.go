@@ -24,5 +24,5 @@ func (cp *CreateProduct) Execute(productDTO *dtos.ProductDTO) (*dtos.ProductDTO,
 		return nil, err
 	}
 
-	return dtos.ConvertProductEntityToDTO(product), nil
+	return dtos.NewProductDTOFromEntity(product), nil
 }
