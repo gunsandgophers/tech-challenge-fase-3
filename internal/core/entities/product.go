@@ -1,44 +1,47 @@
 package entities
 
+import "github.com/google/uuid"
+
 type Product struct {
-	ID          int
-	Name        string
-	Category    string
-	Price       float64
-	Description string
-	Image       string
+	id          string
+	name        string
+	category    string
+	price       float64
+	description string
+	image       string
 }
 
-func NewProduct(name string, category string, price float64, description string, image string) *Product {
+func CreateProduct(name string, category string, price float64, description string, image string) *Product {
 	return &Product{
-		Name:        name,
-		Category:    category,
-		Price:       price,
-		Description: description,
-		Image:       image,
+		id:          uuid.NewString(),
+		name:        name,
+		category:    category,
+		price:       price,
+		description: description,
+		image:       image,
 	}
 }
 
 func (p *Product) GetName() string {
-	return p.Name
+	return p.name
 }
 
-func (p *Product) GetID() int {
-	return p.ID
+func (p *Product) GetId() string {
+	return p.id
 }
 
 func (p *Product) GetCategory() string {
-	return p.Category
+	return p.category
 }
 
 func (p *Product) GetPrice() float64 {
-	return p.Price
+	return p.price
 }
 
 func (p *Product) GetDescription() string {
-	return p.Description
+	return p.description
 }
 
 func (p *Product) GetImage() string {
-	return p.Image
+	return p.image
 }

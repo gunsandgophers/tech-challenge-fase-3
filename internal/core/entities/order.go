@@ -20,10 +20,10 @@ const (
 )
 
 type Order struct {
-	id     string
+	id         string
 	customerId *string
-	items  []*valueobjects.OrderItem
-	status OrderStatus
+	items      []*valueobjects.OrderItem
+	status     OrderStatus
 }
 
 func CreateOpenOrder(customerId *string) *Order {
@@ -37,10 +37,10 @@ func CreateOpenOrder(customerId *string) *Order {
 
 func RestoreOrder(id string, customerId *string, items []*valueobjects.OrderItem, status OrderStatus) *Order {
 	return &Order{
-		id: id,
+		id:         id,
 		customerId: customerId,
-		items: items,
-		status: status,
+		items:      items,
+		status:     status,
 	}
 }
 

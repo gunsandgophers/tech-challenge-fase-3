@@ -28,7 +28,7 @@ func CreateCustomer(name string, email string, cpf string) (*Customer, error) {
 		id:    uuid.NewString(),
 		name:  name,
 		email: emailVO,
-		cpf: cpfVO,
+		cpf:   cpfVO,
 	}, nil
 }
 
@@ -46,7 +46,7 @@ func RestoreCustomer(id string, name string, email string, cpf string) (*Custome
 		id:    id,
 		name:  name,
 		email: emailVO,
-		cpf: cpfVO,
+		cpf:   cpfVO,
 	}, nil
 }
 

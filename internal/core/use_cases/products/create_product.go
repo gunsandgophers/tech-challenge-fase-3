@@ -17,7 +17,7 @@ func NewCreateProductUseCase(productRepository repositories.ProductRepositoryInt
 }
 
 func (cp *CreateProduct) Execute(productDTO *dtos.ProductDTO) (*dtos.ProductDTO, error) {
-	product := entities.NewProduct(productDTO.Name, productDTO.Category, productDTO.Price, productDTO.Description, productDTO.Image)
+	product := entities.CreateProduct(productDTO.Name, productDTO.Category, productDTO.Price, productDTO.Description, productDTO.Image)
 
 	err := cp.productRepository.CreateProduct(product)
 	if err != nil {

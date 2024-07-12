@@ -53,7 +53,7 @@ func TestRestoreOrderWithItems(t *testing.T) {
 		items,
 		PAID,
 	)
-	order.AddItem(NewProduct(
+	order.AddItem(CreateProduct(
 		"Product 4",
 		"Meal",
 		10.3,
