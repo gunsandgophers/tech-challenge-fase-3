@@ -31,7 +31,7 @@ func (co *AddOrderItemUseCase) Execute(request *AddOrderItemUseCaseRequest) (*dt
 	if err != nil {
 		return nil, err
 	}
-	order, err := co.orderRepository.FindByID(&request.OrderID)
+	order, err := co.orderRepository.FindByID(request.OrderID)
 	if err != nil {
 		return nil, err
 	}

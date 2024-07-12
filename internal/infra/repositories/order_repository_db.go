@@ -20,21 +20,17 @@ func (r *OrderRepositoryDB) Insert(order *entities.Order) error {
 	INSERT INTO orders(id, customer_id, items, status)
 	VALUES ($1, $2, $3, $4)
 	`
-	var customerId *string
-	if order.GetCustomerId() != "" {
-		*customerId = order.GetCustomerId()
-	}
 
 	return r.conn.Exec(
 		sql,
 		order.GetId(),
-		customerId,
+		order.GetCustomerId(),
 		newOrderItemHelperList(order.GetItems()),
 		order.GetStatus(),
 	)
 }
 
-func (r *OrderRepositoryDB) FindByID(orderId *string) (*entities.Order, error) {
+func (r *OrderRepositoryDB) FindByID(orderId string) (*entities.Order, error) {
 	sql := `SELECT id, to_jsonb(items), status FROM orders WHERE id = $1`
 	row := r.conn.QueryRow(sql, orderId)
 	return r.toEntity(row)
@@ -69,7 +65,13 @@ func (r *OrderRepositoryDB) toEntity(row database.RowDB) (*entities.Order, error
 	if err != nil {
 		return nil, err
 	}
-	return entities.RestoreOrder(id, *customerId, items, status), nil
+	return entities.RestoreOrder(id, customerId, items, status), nil
+}
+
+type orderItemHelper struct {
+	Amount      float64  `json:"amount,omitempty"`
+	Quantity    int    `json:"quantity,omitempty"`
+	ProductName string `json:"product_name,omitempty"`
 }
 
 func orderItemsFromHelper(orderItemsHelper []*orderItemHelper) []*valueobjects.OrderItem {
@@ -96,10 +98,4 @@ func newOrderItemHelperList(orderItems []*valueobjects.OrderItem) []*orderItemHe
 		)
 	}
 	return orderItemsHelper
-}
-
-type orderItemHelper struct {
-	Amount      int64  `json:"amount,omitempty"`
-	Quantity    int    `json:"quantity,omitempty"`
-	ProductName string `json:"product_name,omitempty"`
 }

@@ -4,7 +4,7 @@ import "tech-challenge-fase-1/internal/core/entities"
 
 type OrderDTO struct {
 	Id     string         `json:"order_id,omitempty"`
-	CustomerId string `json:"customer_id,omitempty"`
+	CustomerId *string `json:"customer_id,omitempty"`
 	Items  []*OrderItemDTO `json:"items,omitempty"`
 	Status string         `json:"status,omitempty"`
 	Total  float64        `json:"total,omitempty"`

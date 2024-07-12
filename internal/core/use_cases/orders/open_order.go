@@ -21,16 +21,23 @@ func NewOpenOrderUseCase(
 	}
 }
 
-func (co *OpenOrderUseCase) Execute(customerId string) (*dtos.OrderDTO, error) {
-	if customerId != "" {
-		_ , err := co.customerRepository.GetCustomerByID(customerId)
-		if err != nil {
-			return nil, err
-		}
+func (co *OpenOrderUseCase) validateCustomerId(customerId *string) error {
+	if customerId == nil {
+		return nil
+	}
+	_, err := co.customerRepository.GetCustomerByID(*customerId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (co *OpenOrderUseCase) Execute(customerId *string) (*dtos.OrderDTO, error) {
+	if err := co.validateCustomerId(customerId); err != nil {
+		return nil, err
 	}
 	order := entities.CreateOpenOrder(customerId)
-	err := co.orderRepository.Insert(order)
-	if err != nil {
+	if err := co.orderRepository.Insert(order); err != nil {
 		return nil, err
 	}
 	return dtos.NewOrderDTOFromEntity(order), nil

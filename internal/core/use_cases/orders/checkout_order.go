@@ -28,7 +28,7 @@ func NewCheckoutOrderUseCase(
 
 func (c *CheckoutOrderUseCase) Execute(orderID string) (*dtos.CheckoutDTO, error) {
 
-	order, err := c.orderRepository.FindByID(&orderID)
+	order, err := c.orderRepository.FindByID(orderID)
 	if err != nil {
 		return nil, err
 	}

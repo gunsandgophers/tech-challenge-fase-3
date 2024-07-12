@@ -21,12 +21,12 @@ const (
 
 type Order struct {
 	id     string
-	customerId string
+	customerId *string
 	items  []*valueobjects.OrderItem
 	status OrderStatus
 }
 
-func CreateOpenOrder(customerId string) *Order {
+func CreateOpenOrder(customerId *string) *Order {
 	return RestoreOrder(
 		uuid.NewString(),
 		customerId,
@@ -35,7 +35,7 @@ func CreateOpenOrder(customerId string) *Order {
 	)
 }
 
-func RestoreOrder(id string, customerId string, items []*valueobjects.OrderItem, status OrderStatus) *Order {
+func RestoreOrder(id string, customerId *string, items []*valueobjects.OrderItem, status OrderStatus) *Order {
 	return &Order{
 		id: id,
 		customerId: customerId,
@@ -48,7 +48,7 @@ func (o *Order) GetId() string {
 	return o.id
 }
 
-func (o *Order) GetCustomerId() string {
+func (o *Order) GetCustomerId() *string {
 	return o.customerId
 }
 
@@ -64,8 +64,8 @@ func (o *Order) SetStatus(status OrderStatus) {
 	o.status = status
 }
 
-func (o *Order) GetTotal() int64 {
-	var total int64
+func (o *Order) GetTotal() float64 {
+	var total float64
 	for _, item := range o.items {
 		total = total + item.GetTotal()
 	}
@@ -82,7 +82,7 @@ func (o *Order) FindOrderItem(productName string) *valueobjects.OrderItem {
 }
 
 func (o *Order) AddItem(product *Product, quantity int) {
-	amount := int64(product.GetPrice() * 100)
+	amount := product.GetPrice()
 	productName := product.GetName()
 	item := o.FindOrderItem(productName)
 	if item == nil {

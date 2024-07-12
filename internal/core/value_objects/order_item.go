@@ -1,12 +1,12 @@
 package valueobjects
 
 type OrderItem struct {
-	amount      int64
+	amount      float64
 	quantity    int
 	productName string
 }
 
-func NewOrderItem(amount int64, quantity int, productName string) *OrderItem {
+func NewOrderItem(amount float64, quantity int, productName string) *OrderItem {
 	return &OrderItem{
 		amount: amount,
 		quantity: quantity,
@@ -14,7 +14,7 @@ func NewOrderItem(amount int64, quantity int, productName string) *OrderItem {
 	}
 }
 
-func (i *OrderItem) GetAmount() int64 {
+func (i *OrderItem) GetAmount() float64 {
 	return i.amount
 }
 
@@ -30,6 +30,6 @@ func (i *OrderItem) GetProductName() string {
 	return i.productName
 }
 
-func (i *OrderItem) GetTotal() int64 {
-	return i.amount * int64(i.quantity)
+func (i *OrderItem) GetTotal() float64 {
+	return i.amount * float64(i.quantity)
 }
