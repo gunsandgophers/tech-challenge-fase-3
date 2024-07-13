@@ -3,7 +3,7 @@ package dtos
 import "tech-challenge-fase-1/internal/core/entities"
 
 type ProductDTO struct {
-	ID          int
+	ID          string
 	Name        string
 	Category    string
 	Price       float64
@@ -13,7 +13,7 @@ type ProductDTO struct {
 
 func NewProductDTOFromEntity(product *entities.Product) *ProductDTO {
 	return &ProductDTO{
-		ID:          product.GetID(),
+		ID:          product.GetId(),
 		Name:        product.GetName(),
 		Category:    product.GetCategory(),
 		Price:       product.GetPrice(),

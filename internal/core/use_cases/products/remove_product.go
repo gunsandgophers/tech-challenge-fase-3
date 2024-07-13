@@ -14,11 +14,11 @@ type DeleteProductUseCase struct {
 	productRepository repositories.ProductRepositoryInterface
 }
 
-func (dpc *DeleteProductUseCase) Execute(productID int) error {
-	_, err := dpc.productRepository.FindByID(productID)
+func (dpc *DeleteProductUseCase) Execute(productID string) error {
+	_, err := dpc.productRepository.FindProductByID(productID)
 	if err != nil {
 		return err
 	}
 
-	return dpc.productRepository.DeleteProduct(productID)
+	return dpc.productRepository.Delete(productID)
 }

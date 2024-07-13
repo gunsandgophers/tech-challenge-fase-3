@@ -16,40 +16,36 @@ func NewUpdateProductUseCase(productRepository repositories.ProductRepositoryInt
 	}
 }
 
-func (upuc *UpdateProductUseCase) Execute(productDTO *dtos.ProductDTO) (*entities.Product, error) {
-	product, err := upuc.productRepository.FindByID(productDTO.ID)
+func (upuc *UpdateProductUseCase) Execute(productDTO *dtos.ProductDTO) (*dtos.ProductDTO, error) {
+	product, err := upuc.productRepository.FindProductByID(productDTO.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	updateProductFromDTO(product, productDTO)
+	product = updateProductFromDTO(product, productDTO)
 
-	updatedProduct, err := upuc.productRepository.UpdateProduct(product)
-	if err != nil {
+	if err := upuc.productRepository.Update(product); err != nil {
 		return nil, err
 	}
 
-	return updatedProduct, nil
+	return dtos.NewProductDTOFromEntity(product), nil
 }
 
-func updateProductFromDTO(product *entities.Product, productDTO *dtos.ProductDTO) {
+func updateProductFromDTO(product *entities.Product, productDTO *dtos.ProductDTO) *entities.Product {
 	if productDTO.Name != "" {
-		product.Name = productDTO.Name
+		product.SetName(productDTO.Name)
 	}
-
 	if productDTO.Category != "" {
-		product.Category = productDTO.Category
+		product.SetCategory(productDTO.Category)
 	}
-
 	if productDTO.Price != 0 {
-		product.Price = productDTO.Price
+		product.SetPrice(productDTO.Price)
 	}
-
 	if productDTO.Description != "" {
-		product.Description = productDTO.Description
+		product.SetDescription(productDTO.Description)
 	}
-
 	if productDTO.Image != "" {
-		product.Image = productDTO.Image
+		product.SetImage(productDTO.Image)
 	}
+	return product
 }

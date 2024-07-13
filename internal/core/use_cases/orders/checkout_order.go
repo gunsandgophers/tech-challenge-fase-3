@@ -27,30 +27,32 @@ func NewCheckoutOrderUseCase(
 }
 
 func (c *CheckoutOrderUseCase) Execute(orderID string) (*dtos.CheckoutDTO, error) {
-
-	order, err := c.orderRepository.FindByID(orderID)
+	order, err := c.orderRepository.FindOrderByID(orderID)
 	if err != nil {
 		return nil, err
 	}
 
 	order.SetStatus(entities.AWAITING_PAYMENT)
 
-	checkout, err := c.paymentGateway.Execute(dtos.NewOrderDTOFromEntity(order), dtos.PIX)
+	checkout, err := c.paymentGateway.Execute(
+		dtos.NewOrderDTOFromEntity(order),
+		dtos.PIX,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	// err = c.orderRepository.UpdateStatus(order)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	//
-	// go func() {
-	// 	c.commandEventManager.Add("paid_out", func() {
-	// 		order.SetStatus(entities.PAID)
-	// 		c.orderRepository.UpdateStatus(order)
-	// 	})
-	// }()
+	err = c.orderRepository.Update(order)
+	if err != nil {
+		return nil, err
+	}
+
+	go func() {
+		c.commandEventManager.Add("paid_out", func() {
+			order.SetStatus(entities.PAID)
+			c.orderRepository.Update(order)
+		})
+	}()
 
 	return checkout, nil
 }

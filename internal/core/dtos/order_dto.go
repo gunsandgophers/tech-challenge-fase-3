@@ -33,5 +33,3 @@ func NewOrderDTOFromEntity(order *entities.Order) *OrderDTO {
 		Total:  float64(order.GetTotal()) / 100,
 	}
 }
-
-var NewAddOrderItemDTOFromEntity = NewOrderDTOFromEntity

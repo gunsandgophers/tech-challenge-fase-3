@@ -14,13 +14,13 @@ func (o *OpenOrderRequest) Validate() error {
 
 type AddOrderItemRequest struct {
 	OrderID   string `json:"order_id"`
-	ProductID int    `json:"product_id"`
+	ProductID string    `json:"product_id"`
 	Quantity  int    `json:"quantity"`
 }
 
 func (a *AddOrderItemRequest) Validate() error {
-	if a.ProductID == 0 {
-		return ErrParamIsRequired("product_id", "int")
+	if a.ProductID == "" {
+		return ErrParamIsRequired("product_id", "string")
 	}
 
 	if a.Quantity == 0 {

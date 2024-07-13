@@ -6,7 +6,7 @@ import (
 )
 
 type AddOrderItemUseCaseRequest struct {
-	ProductID int
+	ProductID string
 	Quantity  int
 	OrderID   string
 }
@@ -27,15 +27,15 @@ func NewAddOrderItemUseCase(
 }
 
 func (co *AddOrderItemUseCase) Execute(request *AddOrderItemUseCaseRequest) (*dtos.OrderDTO, error) {
-	_, err := co.productRepository.FindByID(request.ProductID)
+	product, err := co.productRepository.FindProductByID(request.ProductID)
 	if err != nil {
 		return nil, err
 	}
-	order, err := co.orderRepository.FindByID(request.OrderID)
+	order, err := co.orderRepository.FindOrderByID(request.OrderID)
 	if err != nil {
 		return nil, err
 	}
+	order.AddItem(product, request.Quantity)
+	co.orderRepository.Update(order)
 	return dtos.NewOrderDTOFromEntity(order), nil
-	// order.AddItem(product, &request.Quantity)
-	// return dtos.NewAddOrderItemDTOFromEntity(order), co.orderRepository.AddOrderItem(order)
 }

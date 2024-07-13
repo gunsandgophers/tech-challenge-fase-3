@@ -20,7 +20,6 @@ func (r *OrderRepositoryDB) Insert(order *entities.Order) error {
 	INSERT INTO orders(id, customer_id, items, status)
 	VALUES ($1, $2, $3, $4)
 	`
-
 	return r.conn.Exec(
 		sql,
 		order.GetId(),
@@ -30,23 +29,28 @@ func (r *OrderRepositoryDB) Insert(order *entities.Order) error {
 	)
 }
 
-func (r *OrderRepositoryDB) FindByID(orderId string) (*entities.Order, error) {
+func (r *OrderRepositoryDB) FindOrderByID(orderId string) (*entities.Order, error) {
 	sql := `SELECT id, to_jsonb(items), status FROM orders WHERE id = $1`
 	row := r.conn.QueryRow(sql, orderId)
 	return r.toEntity(row)
 }
 
-// func (r *OrderRepositoryDB) AddOrderItem(order *entities.Order) error {
-// 	sql := `UPDATE orders SET items = $1  WHERE id = $2;`
-// 	err := r.conn.Exec(sql, order.GetItems(), order.GetId())
-// 	return err
-// }
-//
-// func (r *OrderRepositoryDB) UpdateStatus(order *entities.Order) error {
-// 	sql := `UPDATE orders SET status = $1  WHERE id = $2;`
-// 	err := r.conn.Exec(sql, order.GetStatus(), order.GetId())
-// 	return err
-// }
+func (r *OrderRepositoryDB) Update(order *entities.Order) error {
+	sql := `
+	UPDATE orders 
+	SET 
+		customer_id = $1 
+		items = $2 
+		status = $3 
+	WHERE id = $4;`
+	return r.conn.Exec(
+		sql,
+		order.GetCustomerId(),
+		newOrderItemHelperList(order.GetItems()),
+		order.GetStatus(),
+		order.GetId(),
+	)
+}
 
 func (r *OrderRepositoryDB) toEntity(row database.RowDB) (*entities.Order, error) {
 	var id string
