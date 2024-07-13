@@ -48,7 +48,7 @@ func (pc *ProductController) CreateProduct(c httpserver.HTTPContext) {
 	}
 
 	respProduct, err := products.NewCreateProductUseCase(pc.productRepository).Execute(&dtos.ProductDTO{
-		ID:          0,
+		ID:          "",
 		Name:        product.Name,
 		Category:    product.Category,
 		Price:       product.Price,
@@ -87,15 +87,8 @@ func (pc *ProductController) UpdateProduct(c httpserver.HTTPContext) {
 		return
 	}
 
-	ID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, httpserver.Payload{
-			"error": err.Error()})
-		return
-	}
-
 	respProduct, err := products.NewUpdateProductUseCase(pc.productRepository).Execute(&dtos.ProductDTO{
-		ID:          ID,
+		ID:          c.Param("id"),
 		Name:        product.Name,
 		Category:    product.Category,
 		Price:       product.Price,
@@ -126,15 +119,9 @@ func (pc *ProductController) UpdateProduct(c httpserver.HTTPContext) {
 // @Failure      500 {string} string "when delete process error"
 // @Router       /product/{id}/ [delete]
 func (pc *ProductController) DeleteProduct(c httpserver.HTTPContext) {
-	ID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, httpserver.Payload{
-			"error": err.Error()})
-		return
-	}
-
-	err = products.NewDeleteProductUseCase(pc.productRepository).Execute(ID)
-	if err != nil {
+	id := c.Param("id")
+	deleteProduct := products.NewDeleteProductUseCase(pc.productRepository)
+	if err := deleteProduct.Execute(id); err != nil {
 		c.JSON(http.StatusInternalServerError, httpserver.Payload{
 			"error": err.Error()})
 		return

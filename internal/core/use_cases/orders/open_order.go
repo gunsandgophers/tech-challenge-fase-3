@@ -1,9 +1,9 @@
 package orders
 
 import (
-	"tech-challenge-fase-1/internal/core/repositories"
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
+	"tech-challenge-fase-1/internal/core/repositories"
 )
 
 type OpenOrderUseCase struct {
@@ -21,23 +21,24 @@ func NewOpenOrderUseCase(
 	}
 }
 
-func (co *OpenOrderUseCase) Execute(customerID *string) (*dtos.OrderDTO, error) {
-
-	if customerID != nil {
-		_, err := co.customerRepository.GetCustomerByID(customerID)
-
-		if err != nil {
-			return nil, err
-		}
+func (co *OpenOrderUseCase) validateCustomerId(customerId *string) error {
+	if customerId == nil {
+		return nil
 	}
-
-	id, err := co.orderRepository.Open(customerID)
-
+	_, err := co.customerRepository.GetCustomerByID(*customerId)
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (co *OpenOrderUseCase) Execute(customerId *string) (*dtos.OrderDTO, error) {
+	if err := co.validateCustomerId(customerId); err != nil {
 		return nil, err
 	}
-
-	return dtos.NewOpenOrderDTOFromEntity(&entities.Order{
-		ID: *id,
-	}), nil
+	order := entities.CreateOpenOrder(customerId)
+	if err := co.orderRepository.Insert(order); err != nil {
+		return nil, err
+	}
+	return dtos.NewOrderDTOFromEntity(order), nil
 }

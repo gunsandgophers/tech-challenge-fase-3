@@ -50,7 +50,7 @@ func (r *CustomerRepositoryDB) toEntity(row database.RowDB) (*entities.Customer,
 	return entities.RestoreCustomer(id, name, email, cpf)
 }
 
-func (r *CustomerRepositoryDB) GetCustomerByID(id *string) (*entities.Customer, error) {
+func (r *CustomerRepositoryDB) GetCustomerByID(id string) (*entities.Customer, error) {
 	sql := "SELECT id, name, email, cpf FROM customer WHERE id = $1"
 	row := r.conn.QueryRow(sql, id)
 

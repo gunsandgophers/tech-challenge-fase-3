@@ -17,12 +17,16 @@ func NewCreateProductUseCase(productRepository repositories.ProductRepositoryInt
 }
 
 func (cp *CreateProduct) Execute(productDTO *dtos.ProductDTO) (*dtos.ProductDTO, error) {
-	product := entities.NewProduct(productDTO.Name, productDTO.Category, productDTO.Price, productDTO.Description, productDTO.Image)
-
-	err := cp.productRepository.CreateProduct(product)
+	product := entities.CreateProduct(
+		productDTO.Name,
+		productDTO.Category,
+		productDTO.Price,
+		productDTO.Description,
+		productDTO.Image,
+	)
+	err := cp.productRepository.Insert(product)
 	if err != nil {
 		return nil, err
 	}
-
-	return dtos.ConvertProductEntityToDTO(product), nil
+	return dtos.NewProductDTOFromEntity(product), nil
 }
