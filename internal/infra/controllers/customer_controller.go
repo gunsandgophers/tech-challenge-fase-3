@@ -30,7 +30,7 @@ func NewCustomerController(customerRepository repositories.CustomerRepositoryInt
 // @Router       /customer/{cpf}/ [get]
 func (cc *CustomerController) GetCustomer(c httpserver.HTTPContext) {
 	cpf := c.Param("cpf")
-	getCustomer := customers.NewGetCustomer(cc.customerRepository)
+	getCustomer := customers.NewGetCustomerUseCase(cc.customerRepository)
 	customer, err := getCustomer.Execute(cpf)
 	if err != nil {
 		sendError(c, http.StatusNotFound, "Customer not found")
@@ -58,7 +58,7 @@ func (cc *CustomerController) RegisterCustomer(c httpserver.HTTPContext) {
 		return
 	}
 
-	insertCustomer := customers.NewInsertCustomer(cc.customerRepository)
+	insertCustomer := customers.NewInsertCustomerUseCase(cc.customerRepository)
 	dto := &dtos.CreateCustomerDTO{
 		Name:  request.Name,
 		Email: request.Email,
