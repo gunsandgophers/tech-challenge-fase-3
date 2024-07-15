@@ -12,8 +12,11 @@ func TestCreateOpenOrderAsAnonymous(t *testing.T) {
 	if order.GetId() == "" {
 		t.Errorf("Order Id can't be empty")
 	}
-	if order.GetStatus() != PENDING {
-		t.Errorf("Initial Status needs to be PENDING")
+	if order.GetPaymentStatus() != ORDER_PAYMENT_PENDING {
+		t.Errorf("Initial Payment Status needs to be PENDING")
+	}
+	if order.GetPreparationStatus() != ORDER_PREPARATION_AWAITING {
+		t.Errorf("Initial Preparation Status needs to be AWAITING")
 	}
 	if order.GetCustomerId() != nil {
 		t.Errorf("CustomerId different from the definition")
@@ -29,8 +32,11 @@ func TestCreateOpenOrderWithCustomer(t *testing.T) {
 	if order.GetId() == "" {
 		t.Errorf("Order Id can't be empty")
 	}
-	if order.GetStatus() != PENDING {
-		t.Errorf("Initial Status needs to be PENDING")
+	if order.GetPaymentStatus() != ORDER_PAYMENT_PENDING {
+		t.Errorf("Initial Payment Status needs to be PENDING")
+	}
+	if order.GetPreparationStatus() != ORDER_PREPARATION_AWAITING {
+		t.Errorf("Initial Preparation Status needs to be AWAITING")
 	}
 	if order.GetCustomerId() != &customerId {
 		t.Errorf("CustomerId different from the definition")
@@ -51,7 +57,8 @@ func TestRestoreOrderWithItems(t *testing.T) {
 		uuid.NewString(),
 		&customerId,
 		items,
-		PAID,
+		ORDER_PAYMENT_PENDING,
+		ORDER_PREPARATION_AWAITING,
 	)
 	order.AddItem(CreateProduct(
 		"Product 4",
@@ -66,8 +73,11 @@ func TestRestoreOrderWithItems(t *testing.T) {
 	if order.GetId() == "" {
 		t.Errorf("Order Id can't be empty")
 	}
-	if order.GetStatus() != PAID {
-		t.Errorf("Initial Status different from the definition")
+	if order.GetPaymentStatus() != ORDER_PAYMENT_PENDING {
+		t.Errorf("Payment status different from the definition")
+	}
+	if order.GetPreparationStatus() != ORDER_PREPARATION_AWAITING {
+		t.Errorf("Preparation status different from the definition")
 	}
 	if order.GetCustomerId() != &customerId {
 		t.Errorf("CustomerId different from the definition")

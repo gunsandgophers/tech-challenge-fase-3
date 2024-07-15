@@ -70,7 +70,6 @@ func (c *CheckoutOrderUseCase) Execute(
 	for _, product := range products {
 		order.AddItem(product, 1)
 	}
-	c.orderRepository.Insert(order)
 
 	// TODO: refactor. Stay here just for now
 	order.SetStatus(entities.AWAITING_PAYMENT)
@@ -81,6 +80,8 @@ func (c *CheckoutOrderUseCase) Execute(
 	if err != nil {
 		return nil, err
 	}
+
+	c.orderRepository.Insert(order)
 
 	// TODO: refactor/remove??
 	// err = c.orderRepository.Update(order)

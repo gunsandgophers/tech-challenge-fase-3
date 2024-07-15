@@ -17,20 +17,21 @@ func NewOrderRepositoryDB(conn database.ConnectionDB) *OrderRepositoryDB {
 
 func (r *OrderRepositoryDB) Insert(order *entities.Order) error {
 	sql := `
-	INSERT INTO orders(id, customer_id, items, status)
-	VALUES ($1, $2, $3, $4)
+	INSERT INTO orders(id, customer_id, items, payment_status, preparation_status)
+	VALUES ($1, $2, $3, $4, $5)
 	`
 	return r.conn.Exec(
 		sql,
 		order.GetId(),
 		order.GetCustomerId(),
 		newOrderItemHelperList(order.GetItems()),
-		order.GetStatus(),
+		order.GetPaymentStatus().String(),
+		order.GetPreparationStatus().String(),
 	)
 }
 
 func (r *OrderRepositoryDB) FindOrderByID(orderId string) (*entities.Order, error) {
-	sql := `SELECT id, to_jsonb(items), status FROM orders WHERE id = $1`
+	sql := `SELECT * status FROM orders WHERE id = $1`
 	row := r.conn.QueryRow(sql, orderId)
 	return r.toEntity(row)
 }
@@ -41,13 +42,15 @@ func (r *OrderRepositoryDB) Update(order *entities.Order) error {
 	SET 
 		customer_id = $1 
 		items = $2 
-		status = $3 
-	WHERE id = $4;`
+		payment_status = $3 
+		preparation_status = $4
+	WHERE id = $5;`
 	return r.conn.Exec(
 		sql,
 		order.GetCustomerId(),
 		newOrderItemHelperList(order.GetItems()),
-		order.GetStatus(),
+		order.GetPaymentStatus().String(),
+		order.GetPreparationStatus().String(),
 		order.GetId(),
 	)
 }
@@ -57,8 +60,9 @@ func (r *OrderRepositoryDB) toEntity(row database.RowDB) (*entities.Order, error
 	var customerId *string
 	var items []*valueobjects.OrderItem
 	var itemByte []byte
-	var status entities.OrderStatus
-	err := row.Scan(&id, &customerId, &itemByte, &status)
+	var paymentStatus entities.OrderPaymentStatus
+	var preparationStatus entities.OrderPreparationStatus
+	err := row.Scan(&id, &customerId, &itemByte, &paymentStatus, &preparationStatus)
 	if err != nil {
 		if err.Error() == ErrNotFound {
 			return nil, ErrOrderNotFound
@@ -69,7 +73,7 @@ func (r *OrderRepositoryDB) toEntity(row database.RowDB) (*entities.Order, error
 	if err != nil {
 		return nil, err
 	}
-	return entities.RestoreOrder(id, customerId, items, status), nil
+	return entities.RestoreOrder(id, customerId, items, paymentStatus, preparationStatus), nil
 }
 
 type orderItemHelper struct {
