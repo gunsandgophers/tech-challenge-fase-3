@@ -2,9 +2,9 @@ package repositories
 
 import (
 	"strings"
-	"tech-challenge-fase-1/internal/infra/database"
 	"tech-challenge-fase-1/internal/core/entities"
 	"tech-challenge-fase-1/internal/core/errors"
+	"tech-challenge-fase-1/internal/infra/database"
 )
 
 type ProductRepositoryDB struct {
@@ -24,7 +24,7 @@ func (r *ProductRepositoryDB) Insert(product *entities.Product) error {
 		sql,
 		product.GetId(),
 		product.GetName(),
-		product.GetCategory(),
+		product.GetCategory().String(),
 		product.GetPrice(),
 		product.GetDescription(),
 		product.GetImage(),
@@ -36,8 +36,8 @@ func (r *ProductRepositoryDB) FindProductByID(ID string) (*entities.Product, err
 	SELECT
 		id,
 		name,
-		price,
 		category,
+		price,
 		description,
 		image
 	FROM
@@ -62,7 +62,7 @@ func (r *ProductRepositoryDB) Update(product *entities.Product) error {
 	return r.conn.Exec(
 		sql,
 		product.GetName(),
-		product.GetCategory(),
+		product.GetCategory().String(),
 		product.GetPrice(),
 		product.GetDescription(),
 		product.GetImage(),
@@ -89,8 +89,8 @@ func (r *ProductRepositoryDB) ListProducts() ([]*entities.Product, error) {
 	SELECT
 		id,
 		name,
-		price,
 		category,
+		price,
 		description,
 		image
 	FROM
@@ -109,21 +109,22 @@ func (r *ProductRepositoryDB) ListProducts() ([]*entities.Product, error) {
 	return products, nil
 }
 
-func (r *ProductRepositoryDB) FindProductByCategory(category string, page, size int) ([]*entities.Product, error) {
+func (r *ProductRepositoryDB) FindProductByCategory(category entities.ProductCategory, page, size int) ([]*entities.Product, error) {
 	sql := `
 	SELECT
 		id,
 		name,
-		price,
 		category,
+		price,
 		description,
 		image
 	FROM
 		products
 	WHERE
-		category = $1
-	LIMIT $2 OFFSET $3`
-	rows, err := r.conn.Query(sql, category, size, (page-1)*size)
+		category LIKE $1
+	LIMIT $2 OFFSET $3
+	`
+	rows, err := r.conn.Query(sql, category.String(), size, (page-1)*size)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +140,7 @@ func (r *ProductRepositoryDB) FindProductByCategory(category string, page, size 
 func (r *ProductRepositoryDB) toEntity(row database.RowDB) (*entities.Product, error) {
 	var id          string
 	var name        string
-	var category    string
+	var category    entities.ProductCategory
 	var price       float64
 	var description string
 	var image       string

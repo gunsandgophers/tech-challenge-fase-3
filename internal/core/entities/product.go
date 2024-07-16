@@ -2,16 +2,29 @@ package entities
 
 import "github.com/google/uuid"
 
+type ProductCategory string
+
+func (s ProductCategory) String() string {
+	return string(s)
+}
+
+const (
+	PRODUCT_CATEGORY_SANDWICH   ProductCategory = "SANDWICH"
+	PRODUCT_CATEGORY_SIDEDISHES ProductCategory = "SIDEDISHES"
+	PRODUCT_CATEGORY_DRINKS     ProductCategory = "DRINKS"
+	PRODUCT_CATEGORY_DESSERTS   ProductCategory = "DESSETS"
+)
+
 type Product struct {
 	id          string
 	name        string
-	category    string
+	category    ProductCategory
 	price       float64
 	description string
 	image       string
 }
 
-func CreateProduct(name string, category string, price float64, description string, image string) *Product {
+func CreateProduct(name string, category ProductCategory, price float64, description string, image string) *Product {
 	return RestoreProduct(
 		uuid.NewString(),
 		name,
@@ -22,7 +35,14 @@ func CreateProduct(name string, category string, price float64, description stri
 	)
 }
 
-func RestoreProduct(id string, name string, category string, price float64, description string, image string) *Product {
+func RestoreProduct(
+	id string,
+	name string,
+	category ProductCategory,
+	price float64,
+	description string,
+	image string,
+) *Product {
 	return &Product{
 		id:          id,
 		name:        name,
@@ -45,11 +65,11 @@ func (p *Product) GetId() string {
 	return p.id
 }
 
-func (p *Product) GetCategory() string {
+func (p *Product) GetCategory() ProductCategory {
 	return p.category
 }
 
-func (p *Product) SetCategory(category string) {
+func (p *Product) SetCategory(category ProductCategory) {
 	p.category = category
 }
 

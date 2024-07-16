@@ -10,7 +10,7 @@ type GetCustomer struct {
 	customerRepository repositories.CustomerRepositoryInterface
 }
 
-func NewGetCustomer(customerRepository repositories.CustomerRepositoryInterface) *GetCustomer {
+func NewGetCustomerUseCase(customerRepository repositories.CustomerRepositoryInterface) *GetCustomer {
 	return &GetCustomer{
 		customerRepository: customerRepository,
 	}

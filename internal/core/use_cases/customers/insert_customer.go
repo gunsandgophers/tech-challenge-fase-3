@@ -10,7 +10,7 @@ type InsertCustomer struct {
 	customerRepository repositories.CustomerRepositoryInterface
 }
 
-func NewInsertCustomer(customerRepository repositories.CustomerRepositoryInterface) *InsertCustomer {
+func NewInsertCustomerUseCase(customerRepository repositories.CustomerRepositoryInterface) *InsertCustomer {
 	return &InsertCustomer{
 		customerRepository: customerRepository,
 	}

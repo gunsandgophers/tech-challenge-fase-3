@@ -1,9 +1,10 @@
 package products
 
 import (
-	"tech-challenge-fase-1/internal/core/repositories"
+	"strings"
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
+	"tech-challenge-fase-1/internal/core/repositories"
 )
 
 type CreateProduct struct {
@@ -19,7 +20,7 @@ func NewCreateProductUseCase(productRepository repositories.ProductRepositoryInt
 func (cp *CreateProduct) Execute(productDTO *dtos.ProductDTO) (*dtos.ProductDTO, error) {
 	product := entities.CreateProduct(
 		productDTO.Name,
-		productDTO.Category,
+		entities.ProductCategory(strings.ToUpper(productDTO.Category)),
 		productDTO.Price,
 		productDTO.Description,
 		productDTO.Image,

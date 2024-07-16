@@ -1,7 +1,7 @@
 CREATE TABLE products (
   id uuid PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  category VARCHAR(20) NOT NULL CHECK (category IN ('sandwich', 'sidedishes', 'drinks', 'desserts')),
+  category VARCHAR(20) NOT NULL CHECK (category IN ('SANDWICH', 'SIDEDISHES', 'DRINKS', 'DESSERTS')),
   price NUMERIC(10, 2) NOT NULL,
   description TEXT,
   image TEXT,

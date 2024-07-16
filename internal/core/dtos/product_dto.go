@@ -15,7 +15,7 @@ func NewProductDTOFromEntity(product *entities.Product) *ProductDTO {
 	return &ProductDTO{
 		ID:          product.GetId(),
 		Name:        product.GetName(),
-		Category:    product.GetCategory(),
+		Category:    product.GetCategory().String(),
 		Price:       product.GetPrice(),
 		Description: product.GetDescription(),
 		Image:       product.GetImage(),

@@ -3,7 +3,7 @@ package services
 import (
 	"tech-challenge-fase-1/internal/infra/events"
 	"tech-challenge-fase-1/internal/core/dtos"
-	"time"
+	// "time"
 )
 
 type MercadoPagoGateway struct {
@@ -21,12 +21,8 @@ func (m *MercadoPagoGateway) Execute(order *dtos.OrderDTO, method dtos.MethodTyp
 	link := "https://www.pngall.com/wp-content/uploads/2/QR-Code-PNG-Images.png"
 	total := order.Total
 
-	go func() {
-		time.Sleep(time.Second * 5)
-		m.eventManager.Invoke("paid_out")
-	}()
-
 	return &dtos.CheckoutDTO{
+		OrderId: order.Id,
 		PaymentLink: &link,
 		Method:      &method,
 		Amount:      &total,
