@@ -71,8 +71,7 @@ func (c *CheckoutOrderUseCase) Execute(
 		order.AddItem(product, 1)
 	}
 
-	// TODO: refactor. Stay here just for now
-	order.SetStatus(entities.AWAITING_PAYMENT)
+	order.AwaitingPayment()
 	checkout, err := c.paymentGateway.Execute(
 		dtos.NewOrderDTOFromEntity(order),
 		dtos.PIX,
@@ -82,19 +81,5 @@ func (c *CheckoutOrderUseCase) Execute(
 	}
 
 	c.orderRepository.Insert(order)
-
-	// TODO: refactor/remove??
-	// err = c.orderRepository.Update(order)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	//
-	// go func() {
-	// 	c.commandEventManager.Add("paid_out", func() {
-	// 		order.SetStatus(entities.PAID)
-	// 		c.orderRepository.Update(order)
-	// 	})
-	// }()
-
 	return checkout, nil
 }

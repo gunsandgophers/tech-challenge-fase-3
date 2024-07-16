@@ -1,8 +1,11 @@
 package products
 
 import (
-	"tech-challenge-fase-1/internal/core/repositories"
+	"log"
+	"strings"
 	"tech-challenge-fase-1/internal/core/dtos"
+	"tech-challenge-fase-1/internal/core/entities"
+	"tech-challenge-fase-1/internal/core/repositories"
 )
 
 func NewListProductsByCategoryUseCase(productRepository repositories.ProductRepositoryInterface) *ListProductsByCategoryUseCase {
@@ -16,10 +19,14 @@ type ListProductsByCategoryUseCase struct {
 }
 
 func (lpbcc *ListProductsByCategoryUseCase) Execute(category string, page, size int) ([]dtos.ProductDTO, error) {
-	products, err := lpbcc.productRepository.FindProductByCategory(category, page, size)
+	productCategory := entities.ProductCategory(strings.ToUpper(category))
+	log.Println(productCategory)
+	products, err := lpbcc.productRepository.FindProductByCategory(productCategory, page, size)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Println(products)
 
 	var productsDTO []dtos.ProductDTO
 	for _, product := range products {

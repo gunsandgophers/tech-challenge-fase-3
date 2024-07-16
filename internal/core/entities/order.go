@@ -60,11 +60,11 @@ func RestoreOrder(
 	preparationStatus OrderPreparationStatus,
 ) *Order {
 	return &Order{
-		id:         id,
-		customerId: customerId,
-		items:      items,
+		id:                id,
+		customerId:        customerId,
+		items:             items,
 		paymentStatus:     paymentStatus,
-		preparationStatus:     preparationStatus,
+		preparationStatus: preparationStatus,
 	}
 }
 
@@ -84,8 +84,8 @@ func (o *Order) GetPaymentStatus() OrderPaymentStatus {
 	return o.paymentStatus
 }
 
-func (o *Order) SetPaymentStatus(status OrderPaymentStatus) {
-	o.paymentStatus = status
+func (o *Order) AwaitingPayment() {
+	o.paymentStatus = ORDER_PAYMENT_AWAITING_PAYMENT
 }
 
 func (o *Order) GetPreparationStatus() OrderPreparationStatus {

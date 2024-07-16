@@ -1,9 +1,10 @@
 package products
 
 import (
-	"tech-challenge-fase-1/internal/core/repositories"
+	"strings"
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
+	"tech-challenge-fase-1/internal/core/repositories"
 )
 
 type UpdateProductUseCase struct {
@@ -36,7 +37,7 @@ func updateProductFromDTO(product *entities.Product, productDTO *dtos.ProductDTO
 		product.SetName(productDTO.Name)
 	}
 	if productDTO.Category != "" {
-		product.SetCategory(productDTO.Category)
+		product.SetCategory(entities.ProductCategory(strings.ToUpper(productDTO.Category)))
 	}
 	if productDTO.Price != 0 {
 		product.SetPrice(productDTO.Price)
