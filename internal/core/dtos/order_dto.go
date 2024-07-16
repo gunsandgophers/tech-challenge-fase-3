@@ -21,7 +21,7 @@ func NewOrderDTOFromEntity(order *entities.Order) *OrderDTO {
 	orderItems := []*OrderItemDTO{}
 	for _, item := range order.GetItems() {
 		orderItems = append(orderItems, &OrderItemDTO{
-			Amount:      float64(item.GetAmount()) / 100,
+			Amount:      item.GetAmount(),
 			Quantity:    item.GetQuantity(),
 			ProductName: item.GetProductName(),
 		})
@@ -32,6 +32,6 @@ func NewOrderDTOFromEntity(order *entities.Order) *OrderDTO {
 		Items:  orderItems,
 		PaymentStatus: order.GetPaymentStatus().String(),
 		PreparationStatus: order.GetPreparationStatus().String(),
-		Total:  float64(order.GetTotal()) / 100,
+		Total:  order.GetTotal(),
 	}
 }
