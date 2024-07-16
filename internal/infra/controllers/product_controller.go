@@ -3,11 +3,11 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-	httpserver "tech-challenge-fase-1/internal/infra/http"
-	"tech-challenge-fase-1/internal/core/repositories"
-	"tech-challenge-fase-1/internal/core/use_cases/products"
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/errors"
+	"tech-challenge-fase-1/internal/core/repositories"
+	"tech-challenge-fase-1/internal/core/use_cases/products"
+	httpserver "tech-challenge-fase-1/internal/infra/http"
 )
 
 type ProductController struct {
@@ -22,7 +22,9 @@ type ProductRequest struct {
 	Image       string  `json:"image" `
 }
 
-func NewProductController(productRepository repositories.ProductRepositoryInterface) *ProductController {
+func NewProductController(
+	productRepository repositories.ProductRepositoryInterface,
+) *ProductController {
 	return &ProductController{
 		productRepository: productRepository,
 	}
@@ -55,17 +57,16 @@ func (pc *ProductController) CreateProduct(c httpserver.HTTPContext) {
 		Description: product.Description,
 		Image:       product.Image,
 	})
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, httpserver.Payload{
-			"error": err.Error()})
+			"error": err.Error(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, httpserver.Payload{
 		"product": respProduct,
 	})
-
 }
 
 // UpdateProduct godoc
@@ -83,7 +84,8 @@ func (pc *ProductController) UpdateProduct(c httpserver.HTTPContext) {
 	var product ProductRequest
 	if err := c.BindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, httpserver.Payload{
-			"error": err.Error()})
+			"error": err.Error(),
+		})
 		return
 	}
 
@@ -95,10 +97,10 @@ func (pc *ProductController) UpdateProduct(c httpserver.HTTPContext) {
 		Description: product.Description,
 		Image:       product.Image,
 	})
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, httpserver.Payload{
-			"error": err.Error()})
+			"error": err.Error(),
+		})
 		return
 	}
 
@@ -123,7 +125,8 @@ func (pc *ProductController) DeleteProduct(c httpserver.HTTPContext) {
 	deleteProduct := products.NewDeleteProductUseCase(pc.productRepository)
 	if err := deleteProduct.Execute(id); err != nil {
 		c.JSON(http.StatusInternalServerError, httpserver.Payload{
-			"error": err.Error()})
+			"error": err.Error(),
+		})
 		return
 	}
 
@@ -148,7 +151,8 @@ func (pc *ProductController) ListProductsByCategory(c httpserver.HTTPContext) {
 
 	if _, ok := errors.ValidCategories[category]; !ok {
 		c.JSON(http.StatusBadRequest, httpserver.Payload{
-			"error": errors.ErrInvalidCategory.Error()})
+			"error": errors.ErrInvalidCategory.Error(),
+		})
 		return
 	}
 
@@ -158,7 +162,8 @@ func (pc *ProductController) ListProductsByCategory(c httpserver.HTTPContext) {
 	products, err := products.NewListProductsByCategoryUseCase(pc.productRepository).Execute(category, page, size)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, httpserver.Payload{
-			"error": err.Error()})
+			"error": err.Error(),
+		})
 		return
 	}
 
