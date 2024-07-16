@@ -8,6 +8,7 @@ const (
 )
 
 type CheckoutDTO struct {
+	OrderId string
 	PaymentLink *string
 	Method      *MethodType
 	Amount      *float64

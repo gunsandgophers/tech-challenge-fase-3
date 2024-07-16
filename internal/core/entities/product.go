@@ -2,7 +2,6 @@ package entities
 
 import "github.com/google/uuid"
 
-
 type ProductCategory string
 
 func (s ProductCategory) String() string {
@@ -10,10 +9,10 @@ func (s ProductCategory) String() string {
 }
 
 const (
-	PRODUCT_CATEGORY_SANDWICH ProductCategory = "SANDWICH"
-  PRODUCT_CATEGORY_SIDEDISHES ProductCategory = "SIDEDISHES"
-	PRODUCT_CATEGORY_DRINKS ProductCategory = "DRINKS"
-	PRODUCT_CATEGORY_DESSERTS ProductCategory = "DESSETS"
+	PRODUCT_CATEGORY_SANDWICH   ProductCategory = "SANDWICH"
+	PRODUCT_CATEGORY_SIDEDISHES ProductCategory = "SIDEDISHES"
+	PRODUCT_CATEGORY_DRINKS     ProductCategory = "DRINKS"
+	PRODUCT_CATEGORY_DESSERTS   ProductCategory = "DESSETS"
 )
 
 type Product struct {
@@ -36,7 +35,14 @@ func CreateProduct(name string, category ProductCategory, price float64, descrip
 	)
 }
 
-func RestoreProduct(id string, name string, category ProductCategory, price float64, description string, image string) *Product {
+func RestoreProduct(
+	id string,
+	name string,
+	category ProductCategory,
+	price float64,
+	description string,
+	image string,
+) *Product {
 	return &Product{
 		id:          id,
 		name:        name,

@@ -22,6 +22,7 @@ func (m *MercadoPagoGateway) Execute(order *dtos.OrderDTO, method dtos.MethodTyp
 	total := order.Total
 
 	return &dtos.CheckoutDTO{
+		OrderId: order.Id,
 		PaymentLink: &link,
 		Method:      &method,
 		Amount:      &total,
