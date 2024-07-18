@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	httpserver "tech-challenge-fase-1/internal/infra/http"
+
 	// "tech-challenge-fase-1/internal/infra/controllers/request"
 	"tech-challenge-fase-1/internal/core/events"
 	"tech-challenge-fase-1/internal/core/repositories"
@@ -66,6 +67,17 @@ func (cc *OrderController) Checkout(c httpserver.HTTPContext) {
 		return
 	}
 	sendSuccess(c, http.StatusCreated, "checkout-order", checkout)
+}
+
+func (cc *OrderController) GetPaymentStatus(c httpserver.HTTPContext) {
+	orderId := c.Param("order_id")
+	getPaymentStatusUC := orders.NewGetPaymentStatusUseCase(cc.orderRepository)
+	paymentStatus, err := getPaymentStatusUC.Execute(orderId)
+	if err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	sendSuccess(c, http.StatusOK, "get-payment-status-order", paymentStatus)
 }
 
 func (cc *OrderController) Payment(c httpserver.HTTPContext) {

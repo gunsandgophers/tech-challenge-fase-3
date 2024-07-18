@@ -1,10 +1,10 @@
 package repositories
 
 import (
-	"encoding/json"
-	"tech-challenge-fase-1/internal/infra/database"
+	// "encoding/json"
 	"tech-challenge-fase-1/internal/core/entities"
 	valueobjects "tech-challenge-fase-1/internal/core/value_objects"
+	"tech-challenge-fase-1/internal/infra/database"
 )
 
 type OrderRepositoryDB struct {
@@ -32,8 +32,14 @@ func (r *OrderRepositoryDB) Insert(order *entities.Order) error {
 
 func (r *OrderRepositoryDB) FindOrderByID(orderId string) (*entities.Order, error) {
 	sql := `
-	SELECT id, customer_id, items, payment_status, preparation_status
-	FROM orders WHERE id = $1`
+	SELECT
+		id,
+		customer_id,
+		items,
+		payment_status,
+		preparation_status
+	FROM orders 
+	WHERE id = $1`
 	row := r.conn.QueryRow(sql, orderId)
 	return r.toEntity(row)
 }
@@ -60,22 +66,24 @@ func (r *OrderRepositoryDB) Update(order *entities.Order) error {
 func (r *OrderRepositoryDB) toEntity(row database.RowDB) (*entities.Order, error) {
 	var id string
 	var customerId *string
-	var items []*valueobjects.OrderItem
-	var itemByte []byte
+	var items []*orderItemHelper
+	// var itemByte []byte
 	var paymentStatus entities.OrderPaymentStatus
 	var preparationStatus entities.OrderPreparationStatus
-	err := row.Scan(&id, &customerId, &itemByte, &paymentStatus, &preparationStatus)
+	err := row.Scan(&id, &customerId, &items, &paymentStatus, &preparationStatus)
 	if err != nil {
 		if err.Error() == ErrNotFound {
 			return nil, ErrOrderNotFound
 		}
 		return nil, err
 	}
-	err = json.Unmarshal(itemByte, &items)
-	if err != nil {
-		return nil, err
-	}
-	return entities.RestoreOrder(id, customerId, items, paymentStatus, preparationStatus), nil
+	return entities.RestoreOrder(
+		id,
+		customerId,
+		orderItemsFromHelper(items),
+		paymentStatus,
+		preparationStatus,
+	), nil
 }
 
 type orderItemHelper struct {
