@@ -32,6 +32,7 @@ const (
 	ORDER_PREPARATION_IN_PREPARARION OrderPreparationStatus = "IN_PREPARATION"
 	ORDER_PREPARATION_READY          OrderPreparationStatus = "READY"
 	ORDER_PREPARATION_FINISHED       OrderPreparationStatus = "FINISHED"
+	ORDER_PREPARATION_CANCELED       OrderPreparationStatus = "CANCELED"
 )
 
 type Order struct {
@@ -86,6 +87,16 @@ func (o *Order) GetPaymentStatus() OrderPaymentStatus {
 
 func (o *Order) AwaitingPayment() {
 	o.paymentStatus = ORDER_PAYMENT_AWAITING_PAYMENT
+}
+
+func (o *Order) PaymentReceived() {
+	o.paymentStatus = ORDER_PAYMENT_PAID
+	o.SetPreparationStatus(ORDER_PREPARATION_RECEIVED)
+}
+
+func (o *Order) PaymentRejected() {
+	o.paymentStatus = ORDER_PAYMENT_REJECTED
+	o.SetPreparationStatus(ORDER_PREPARATION_CANCELED)
 }
 
 func (o *Order) GetPreparationStatus() OrderPreparationStatus {

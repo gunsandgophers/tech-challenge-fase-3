@@ -10,8 +10,13 @@ type RegiterCustomerRequest struct {
 }
 
 type CheckoutRequest struct {
-	CustomerId  *string `json:"customer_id"`
-	ProductsIds  []string `json:"products_ids"`
+	CustomerId  *string  `json:"customer_id"`
+	ProductsIds []string `json:"products_ids"`
+}
+
+type PaymentRequest struct {
+	OrderId       string `json:"order_id"`
+	PaymentStatus string `json:"payment_status"`
 }
 
 func errParamIsRequired(name, typ string) error {
@@ -51,6 +56,16 @@ func (p *ProductRequest) ValidateProduct() error {
 func (r *CheckoutRequest) Validate() error {
 	if len(r.ProductsIds) == 0 {
 		return errParamCantBeEmpty("products_ids", "string")
+	}
+	return nil
+}
+
+func (r *PaymentRequest) Validate() error {
+	if len(r.OrderId) == 0 {
+		return errParamIsRequired("order_id", "string")
+	}
+	if len(r.PaymentStatus) == 0 {
+		return errParamIsRequired("payment_status", "string")
 	}
 	return nil
 }
