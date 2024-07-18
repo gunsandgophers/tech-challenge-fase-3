@@ -48,9 +48,9 @@ func (r *OrderRepositoryDB) Update(order *entities.Order) error {
 	sql := `
 	UPDATE orders 
 	SET 
-		customer_id = $1 
-		items = $2 
-		payment_status = $3 
+		customer_id = $1,
+		items = $2, 
+		payment_status = $3,
 		preparation_status = $4
 	WHERE id = $5;`
 	return r.conn.Exec(
