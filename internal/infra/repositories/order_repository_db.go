@@ -31,7 +31,9 @@ func (r *OrderRepositoryDB) Insert(order *entities.Order) error {
 }
 
 func (r *OrderRepositoryDB) FindOrderByID(orderId string) (*entities.Order, error) {
-	sql := `SELECT * status FROM orders WHERE id = $1`
+	sql := `
+	SELECT id, customer_id, items, payment_status, preparation_status
+	FROM orders WHERE id = $1`
 	row := r.conn.QueryRow(sql, orderId)
 	return r.toEntity(row)
 }
