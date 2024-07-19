@@ -8,6 +8,7 @@ var (
 	ErrOrderNotAwaitingPayment = errors.New("Order not awaiting payment")
 	ErrOrderNotAwaitingPreparation = errors.New("Order not awaiting preparation")
 	ErrInvalidPaymentStatus = errors.New("Invalid Payment Status")
+	ErrInvalidPreparationStatus = errors.New("Invalid Preparation Status")
 	ValidCategories    = map[string]bool{
 		"sandwich":   true,
 		"sidedishes": true,

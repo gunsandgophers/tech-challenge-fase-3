@@ -3,22 +3,20 @@ package controllers
 import (
 	"net/http"
 	httpserver "tech-challenge-fase-1/internal/infra/http"
-
-	// "tech-challenge-fase-1/internal/infra/controllers/request"
 	"tech-challenge-fase-1/internal/core/events"
+	"tech-challenge-fase-1/internal/core/queries"
 	"tech-challenge-fase-1/internal/core/repositories"
 	"tech-challenge-fase-1/internal/core/services"
 	"tech-challenge-fase-1/internal/core/use_cases/orders"
 )
 
 type OrderController struct {
-	orderRepository    repositories.OrderRepositoryInterface
-	customerRepository repositories.CustomerRepositoryInterface
-	productRepository  repositories.ProductRepositoryInterface
-
-	paymentGateway services.PaymentGatewayInterface
-
-	commandEventManager events.ManagerEvent
+	orderRepository       repositories.OrderRepositoryInterface
+	customerRepository    repositories.CustomerRepositoryInterface
+	productRepository     repositories.ProductRepositoryInterface
+	paymentGateway        services.PaymentGatewayInterface
+	commandEventManager   events.ManagerEvent
+	orderDisplayListQuery queries.OrderDisplayListQueryInterface
 }
 
 func NewOrderController(
@@ -27,13 +25,15 @@ func NewOrderController(
 	productRepository repositories.ProductRepositoryInterface,
 	paymentGateway services.PaymentGatewayInterface,
 	commandEventManager events.ManagerEvent,
+	orderDisplayListQuery queries.OrderDisplayListQueryInterface,
 ) *OrderController {
 	return &OrderController{
-		orderRepository:     orderRepository,
-		customerRepository:  customerRepository,
-		productRepository:   productRepository,
-		paymentGateway:      paymentGateway,
-		commandEventManager: commandEventManager,
+		orderRepository:       orderRepository,
+		customerRepository:    customerRepository,
+		productRepository:     productRepository,
+		paymentGateway:        paymentGateway,
+		commandEventManager:   commandEventManager,
+		orderDisplayListQuery: orderDisplayListQuery,
 	}
 }
 
@@ -96,4 +96,31 @@ func (cc *OrderController) Payment(c httpserver.HTTPContext) {
 		return
 	}
 	sendSuccess(c, http.StatusNoContent, "payment-order", nil)
+}
+
+func (cc *OrderController) OrderDisplayList(c httpserver.HTTPContext) {
+	orderDisplayListUseCase := orders.NewOrderDisplayListUseCase(
+		cc.orderDisplayListQuery,
+	)
+	dtos, err := orderDisplayListUseCase.Execute()
+	if err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	sendSuccess(c, http.StatusOK, "order-display-list", httpserver.Payload{
+		"orders": dtos,
+	})
+}
+
+func (cc *OrderController) OrderPreparationStatusUpdate(c httpserver.HTTPContext) {
+	orderId := c.Param("order_id")
+	request := &PreparationStatusUpdateRequest{}
+	c.BindJSON(request)
+	preparationStatusUpdateUseCase := orders.NewPreparationStatusUpdateUseCase(cc.orderRepository)
+	err := preparationStatusUpdateUseCase.Execute(orderId, request.PreparationStatus)
+	if err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	sendSuccess(c, http.StatusNoContent, "preparation-status-order", nil)
 }

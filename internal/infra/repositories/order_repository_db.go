@@ -67,7 +67,6 @@ func (r *OrderRepositoryDB) toEntity(row database.RowDB) (*entities.Order, error
 	var id string
 	var customerId *string
 	var items []*orderItemHelper
-	// var itemByte []byte
 	var paymentStatus entities.OrderPaymentStatus
 	var preparationStatus entities.OrderPreparationStatus
 	err := row.Scan(&id, &customerId, &items, &paymentStatus, &preparationStatus)
