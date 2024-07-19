@@ -19,6 +19,10 @@ type PaymentRequest struct {
 	PaymentStatus string `json:"payment_status"`
 }
 
+type PreparationStatusUpdateRequest struct {
+	PreparationStatus string `json:"preparation_status"`
+}
+
 func errParamIsRequired(name, typ string) error {
 	return fmt.Errorf("param: %s (type: %s) is required", name, typ)
 }
@@ -66,6 +70,13 @@ func (r *PaymentRequest) Validate() error {
 	}
 	if len(r.PaymentStatus) == 0 {
 		return errParamIsRequired("payment_status", "string")
+	}
+	return nil
+}
+
+func (r *PreparationStatusUpdateRequest) Validate() error {
+	if len(r.PreparationStatus) == 0 {
+		return errParamIsRequired("preparation_status", "string")
 	}
 	return nil
 }

@@ -111,3 +111,16 @@ func (cc *OrderController) OrderDisplayList(c httpserver.HTTPContext) {
 		"orders": dtos,
 	})
 }
+
+func (cc *OrderController) OrderPreparationStatusUpdate(c httpserver.HTTPContext) {
+	orderId := c.Param("order_id")
+	request := &PreparationStatusUpdateRequest{}
+	c.BindJSON(request)
+	preparationStatusUpdateUseCase := orders.NewPreparationStatusUpdateUseCase(cc.orderRepository)
+	err := preparationStatusUpdateUseCase.Execute(orderId, request.PreparationStatus)
+	if err != nil {
+		sendError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	sendSuccess(c, http.StatusNoContent, "preparation-status-order", nil)
+}

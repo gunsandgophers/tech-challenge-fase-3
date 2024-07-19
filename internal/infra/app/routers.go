@@ -43,9 +43,10 @@ func registerRouters(app *APIApp) {
 	)
 	app.httpServer.POST("/order/payment", orderController.Payment)
 	app.httpServer.GET("/order/display", orderController.OrderDisplayList)
-	// app.httpServer.POST("/order/open", orderController.OpenOrder)
-	// app.httpServer.POST("/order/:order_id/add/item", orderController.AddOrderItem)
-	// app.httpServer.POST("/order/:order_id/checkout", orderController.Checkout)
+	app.httpServer.PUT(
+		"/order/:order_id/preparation-status",
+		orderController.OrderPreparationStatusUpdate,
+	)
 
 	app.httpServer.SetSwagger("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }

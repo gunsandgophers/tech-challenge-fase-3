@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"tech-challenge-fase-1/internal/core/errors"
 	valueobjects "tech-challenge-fase-1/internal/core/value_objects"
 
 	"github.com/google/uuid"
@@ -34,6 +35,20 @@ const (
 	ORDER_PREPARATION_FINISHED       OrderPreparationStatus = "FINISHED"
 	ORDER_PREPARATION_CANCELED       OrderPreparationStatus = "CANCELED"
 )
+
+func IsValidOrderPreparationStatus(status OrderPreparationStatus) bool {
+	switch status {
+	case 
+		ORDER_PREPARATION_AWAITING,
+		ORDER_PREPARATION_RECEIVED,
+		ORDER_PREPARATION_IN_PREPARARION,
+		ORDER_PREPARATION_READY,
+		ORDER_PREPARATION_FINISHED,
+		ORDER_PREPARATION_CANCELED:
+		return true
+	}
+	return false
+}
 
 type Order struct {
 	id                string
@@ -103,8 +118,12 @@ func (o *Order) GetPreparationStatus() OrderPreparationStatus {
 	return o.preparationStatus
 }
 
-func (o *Order) SetPreparationStatus(status OrderPreparationStatus) {
+func (o *Order) SetPreparationStatus(status OrderPreparationStatus) error {
+	if !IsValidOrderPreparationStatus(status) {
+		return errors.ErrInvalidPreparationStatus
+	}
 	o.preparationStatus = status
+	return nil
 }
 
 func (o *Order) GetTotal() float64 {
