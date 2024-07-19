@@ -4,6 +4,7 @@ import (
 	"tech-challenge-fase-1/internal/infra/database"
 	"tech-challenge-fase-1/internal/infra/events"
 	httpserver "tech-challenge-fase-1/internal/infra/http"
+	"tech-challenge-fase-1/internal/infra/queries"
 	"tech-challenge-fase-1/internal/infra/repositories"
 	"tech-challenge-fase-1/internal/infra/services"
 
@@ -16,9 +17,8 @@ type APIApp struct {
 	customerRepository *repositories.CustomerRepositoryDB
 	productRepository  *repositories.ProductRepositoryDB
 	orderRepository    *repositories.OrderRepositoryDB
-
+	orderDisplayListQuery *queries.OrderDisplayListQueryDB
 	mercadoPagoGateway *services.MercadoPagoGateway
-
 	eventManager *events.EventManager
 }
 
@@ -50,6 +50,7 @@ func (app *APIApp) initConnectionDB() {
 	app.customerRepository = repositories.NewCustomerRepositoryDB(app.connection)
 	app.productRepository = repositories.NewProductRepositoryDB(app.connection)
 	app.orderRepository = repositories.NewOrderRepositoryDB(app.connection)
+	app.orderDisplayListQuery = queries.NewOrderDisplayListQueryDB(app.connection)
 
 	app.eventManager = events.NewEventManager()
 
