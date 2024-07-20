@@ -41,3 +41,17 @@ To test using swagger, just site this down `api/v1/swagger/index.html` to give i
 #### Rebuilding
 
 Instead the needing to rebuild the swagger documentation, install the swaggo package ant type `swag init` then documentation rebuilt.
+
+## Kubernetes
+
+O minikube precisar estar instalado
+
+```bash
+minikube start
+eval $(minikube docker-env)
+minikube addons enable volumesnapshots
+minikube addons enable csi-hostpath-driver
+docker buildx build -t tech-challenge-go-app .
+kubectl apply -f k8s/
+minikube service tech-challenge-nodeport --url
+```
