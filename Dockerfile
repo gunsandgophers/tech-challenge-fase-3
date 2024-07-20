@@ -1,4 +1,4 @@
-FROM golang:1.22
+FROM golang:1.22-alpine3.20
 
 ENV PROJECT_DIR=/app \
     GO111MODULE=on \

@@ -3,6 +3,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    image: tech-challenge-go-app
     restart: always
     ports:
       - "3003:8080"
