@@ -1,5 +1,26 @@
 basePath: /api/v1
 definitions:
+  controllers.CheckoutRequest:
+    properties:
+      customer_id:
+        type: string
+      products_ids:
+        items:
+          type: string
+        type: array
+    type: object
+  controllers.PaymentRequest:
+    properties:
+      order_id:
+        type: string
+      payment_status:
+        type: string
+    type: object
+  controllers.PreparationStatusUpdateRequest:
+    properties:
+      preparation_status:
+        type: string
+    type: object
   controllers.ProductRequest:
     properties:
       category:
@@ -19,6 +40,8 @@ definitions:
         type: number
       method:
         $ref: '#/definitions/dtos.MethodType'
+      orderId:
+        type: string
       paymentLink:
         type: string
     type: object
@@ -50,27 +73,34 @@ definitions:
     x-enum-varnames:
     - PIX
     - CREDIT_CARD
-  dtos.OrderDTO:
+  dtos.OrderDisplayDTO:
     properties:
+      createdAt:
+        type: string
+      customer_id:
+        type: string
       items:
         items:
-          $ref: '#/definitions/dtos.OrderItemDTO'
+          $ref: '#/definitions/dtos.OrderItemDisplayDTO'
         type: array
       order_id:
         type: string
-      status:
+      preparation_status:
         type: string
-      total:
-        type: number
     type: object
-  dtos.OrderItemDTO:
+  dtos.OrderItemDisplayDTO:
     properties:
-      amount:
-        type: number
       product_name:
         type: string
       quantity:
         type: integer
+    type: object
+  dtos.PaymentStatusDTO:
+    properties:
+      order_id:
+        type: string
+      payment_status:
+        type: string
     type: object
   dtos.ProductDTO:
     properties:
@@ -79,18 +109,13 @@ definitions:
       description:
         type: string
       id:
-        type: integer
+        type: string
       image:
         type: string
       name:
         type: string
       price:
         type: number
-    type: object
-  request.OpenOrderRequest:
-    properties:
-      customer_id:
-        type: string
     type: object
 externalDocs:
   description: OpenAPI
@@ -144,11 +169,11 @@ paths:
           schema:
             $ref: '#/definitions/dtos.CustomerDTO'
         "400":
-          description: when invalid params
+          description: when bad request
           schema:
             type: string
         "406":
-          description: when invalid status
+          description: when invalid params or invalid object
           schema:
             type: string
       summary: Create a customer
@@ -179,13 +204,13 @@ paths:
       summary: Show a customer
       tags:
       - customers
-  /order/{order_id}/add/item:
-    post:
+  /order/{order_id}/payment-status:
+    get:
       consumes:
       - application/json
-      description: do a checkout on a given order
+      description: get payment status by order_id
       parameters:
-      - description: Open Order
+      - description: Get Payment Status
         in: path
         name: order_id
         required: true
@@ -196,42 +221,143 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dtos.CheckoutDTO'
+            $ref: '#/definitions/dtos.PaymentStatusDTO'
         "400":
-          description: when invalid status
+          description: when bad request
           schema:
             type: string
-      summary: Do a order checkout
+        "406":
+          description: when invalid params or invalid object
+          schema:
+            type: string
+      summary: Get a payment status
       tags:
       - orders
-  /order/open/:
-    post:
+  /order/{order_id}/preparation-status:
+    get:
       consumes:
       - application/json
-      description: initiate the order process
+      description: Update the preparation status for an order
       parameters:
-      - description: Open Order
+      - description: Order Identification
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: Order Request Params
         in: body
-        name: order
+        name: preparation_status_update
         required: true
         schema:
-          $ref: '#/definitions/request.OpenOrderRequest'
+          $ref: '#/definitions/controllers.PreparationStatusUpdateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dtos.OrderDTO'
+            items:
+              $ref: '#/definitions/dtos.OrderDisplayDTO'
+            type: array
         "400":
-          description: when invalid params
+          description: when bad request
+          schema:
+            type: string
+      summary: Update order preparation status
+      tags:
+      - orders
+  /order/checkout:
+    post:
+      consumes:
+      - application/json
+      description: make a checkout for an order
+      parameters:
+      - description: Checkout
+        in: body
+        name: checkout
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CheckoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CheckoutDTO'
+        "400":
+          description: when bad request
           schema:
             type: string
         "406":
-          description: when invalid status
+          description: when invalid params or invalid object
           schema:
             type: string
-      summary: Open an order
+      summary: Make an order checkout
+      tags:
+      - orders
+  /order/display:
+    get:
+      consumes:
+      - application/json
+      description: Get order list for a display
+      parameters:
+      - in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: customer_id
+        type: string
+      - in: query
+        name: order_id
+        type: string
+      - in: query
+        name: preparation_status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.OrderDisplayDTO'
+            type: array
+        "400":
+          description: when bad request
+          schema:
+            type: string
+      summary: Get order list
+      tags:
+      - orders
+  /order/payment:
+    post:
+      consumes:
+      - application/json
+      description: process the payment for an order
+      parameters:
+      - description: Payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.PaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: when bad request
+          schema:
+            type: string
+        "406":
+          description: when invalid params or invalid object
+          schema:
+            type: string
+      summary: Process order payment
       tags:
       - orders
   /product/:
@@ -254,11 +380,11 @@ paths:
           schema:
             $ref: '#/definitions/dtos.ProductDTO'
         "400":
-          description: when invalid params
+          description: when bad request
           schema:
             type: string
         "500":
-          description: when create process error
+          description: when create product process error
           schema:
             type: string
       summary: Create a product
@@ -270,10 +396,18 @@ paths:
       - application/json
       description: List a set of products information over followed categories
       parameters:
-      - description: List Product By Category
+      - description: Product category
         in: path
         name: category
         required: true
+        type: string
+      - description: Page defaults to 1
+        in: query
+        name: page
+        type: string
+      - description: Size defaults to 50
+        in: query
+        name: size
         type: string
       produces:
       - application/json
@@ -285,11 +419,11 @@ paths:
               $ref: '#/definitions/dtos.ProductDTO'
             type: array
         "400":
-          description: when invalid params
+          description: when bad request
           schema:
             type: string
         "500":
-          description: when list process error
+          description: when list products process error
           schema:
             type: string
       summary: List products
@@ -301,12 +435,11 @@ paths:
       - application/json
       description: remove the product information
       parameters:
-      - description: Delete Product
-        in: body
-        name: product
+      - description: Product identifier
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/controllers.ProductRequest'
+        type: string
       produces:
       - application/json
       responses:
@@ -315,11 +448,11 @@ paths:
           schema:
             type: string
         "400":
-          description: when invalid params
+          description: when when bad request
           schema:
             type: string
         "500":
-          description: when delete process error
+          description: when delete product process error
           schema:
             type: string
       summary: Delete a product
@@ -330,7 +463,12 @@ paths:
       - application/json
       description: change the product information
       parameters:
-      - description: Update Product
+      - description: Product identifier
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Product object
         in: body
         name: product
         required: true
@@ -344,11 +482,11 @@ paths:
           schema:
             $ref: '#/definitions/dtos.ProductDTO'
         "400":
-          description: when invalid params
+          description: when bad request
           schema:
             type: string
         "500":
-          description: when update process error
+          description: when update product process error
           schema:
             type: string
       summary: Update a product

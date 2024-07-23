@@ -32,19 +32,12 @@ to create a migration to add a user
 
 ### Swagger
 
-URL to access Swagger is <http://localhost:3003/api/v1/swagger/index.html>
-
-#### Testing
-
-To test using swagger, just site this down `api/v1/swagger/index.html` to give it a go.
-
-#### Rebuilding
-
-Instead the needing to rebuild the swagger documentation, install the swaggo package ant type `swag init` then documentation rebuilt.
+URL to access running Swagger is <http://localhost:3003/api/v1/swagger/index.html>
 
 ## Kubernetes
 
-O minikube precisar estar instalado
+> [!IMPORTANT]  
+> [Minikube](https://minikube.sigs.k8s.io/docs?target=_blank) must be installed.
 
 ```bash
 minikube start

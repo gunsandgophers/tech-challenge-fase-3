@@ -2,12 +2,12 @@ package controllers
 
 import (
 	"net/http"
-	httpserver "tech-challenge-fase-1/internal/infra/http"
 	"tech-challenge-fase-1/internal/core/events"
 	"tech-challenge-fase-1/internal/core/queries"
 	"tech-challenge-fase-1/internal/core/repositories"
 	"tech-challenge-fase-1/internal/core/services"
 	"tech-challenge-fase-1/internal/core/use_cases/orders"
+	httpserver "tech-challenge-fase-1/internal/infra/http"
 )
 
 type OrderController struct {
@@ -38,15 +38,17 @@ func NewOrderController(
 }
 
 // Checkout godoc
-// @Summary      Do a order checkout
-// @Description  do a checkout on a given order
-// @Tags         orders
-// @Accept       json
-// @Produce      json
-// @Param        order_id   path      string  true  "Open Order"
-// @Success      200 {object} dtos.CheckoutDTO
-// @Failure      400 {string} string "when invalid status"
-// @Router       /order/{order_id}/add/item [post]
+//
+//	@Summary		Make an order checkout
+//	@Description	make a checkout for an order
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			checkout	body		CheckoutRequest	true	"Checkout"
+//	@Success		200			{object}	dtos.CheckoutDTO
+//	@Failure		400			{string}	string	"when bad request"
+//	@Failure		406			{string}	string	"when invalid params or invalid object"
+//	@Router			/order/checkout [post]
 func (cc *OrderController) Checkout(c httpserver.HTTPContext) {
 	request := CheckoutRequest{}
 	c.BindJSON(&request)
@@ -69,6 +71,18 @@ func (cc *OrderController) Checkout(c httpserver.HTTPContext) {
 	sendSuccess(c, http.StatusCreated, "checkout-order", checkout)
 }
 
+// GetPaymentStatus godoc
+//
+//	@Summary		Get a payment status
+//	@Description	get payment status by order_id
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order_id	path		string	true	"Get Payment Status"
+//	@Success		200			{object}	dtos.PaymentStatusDTO
+//	@Failure		400			{string}	string	"when bad request"
+//	@Failure		406			{string}	string	"when invalid params or invalid object"
+//	@Router			/order/{order_id}/payment-status [get]
 func (cc *OrderController) GetPaymentStatus(c httpserver.HTTPContext) {
 	orderId := c.Param("order_id")
 	getPaymentStatusUC := orders.NewGetPaymentStatusUseCase(cc.orderRepository)
@@ -80,6 +94,18 @@ func (cc *OrderController) GetPaymentStatus(c httpserver.HTTPContext) {
 	sendSuccess(c, http.StatusOK, "get-payment-status-order", paymentStatus)
 }
 
+// Payment godoc
+//
+//	@Summary		Process order payment
+//	@Description	process the payment for an order
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			payment	body		PaymentRequest	true	"Payment"
+//	@Success		200		{object}	string			""
+//	@Failure		400		{string}	string			"when bad request"
+//	@Failure		406		{string}	string			"when invalid params or invalid object"
+//	@Router			/order/payment [post]
 func (cc *OrderController) Payment(c httpserver.HTTPContext) {
 	request := &PaymentRequest{}
 	c.BindJSON(request)
@@ -92,12 +118,23 @@ func (cc *OrderController) Payment(c httpserver.HTTPContext) {
 	)
 	err := paymentUseCase.Execute(request.OrderId, request.PaymentStatus)
 	if err != nil {
-		sendError(c, http.StatusBadRequest, err.Error())
+		sendError(c, http.StatusNotAcceptable, err.Error())
 		return
 	}
 	sendSuccess(c, http.StatusNoContent, "payment-order", nil)
 }
 
+// OrderDisplayList godoc
+//
+//	@Summary		Get order list
+//	@Description	Get order list for a display
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order	query		dtos.OrderDisplayDTO	false	"Order query"
+//	@Success		200		{array}		dtos.OrderDisplayDTO
+//	@Failure		400		{string}	string	"when bad request"
+//	@Router			/order/display [get]
 func (cc *OrderController) OrderDisplayList(c httpserver.HTTPContext) {
 	orderDisplayListUseCase := orders.NewOrderDisplayListUseCase(
 		cc.orderDisplayListQuery,
@@ -112,6 +149,18 @@ func (cc *OrderController) OrderDisplayList(c httpserver.HTTPContext) {
 	})
 }
 
+// OrderPreparationStatusUpdate godoc
+//
+//	@Summary		Update order preparation status
+//	@Description	Update the preparation status for an order
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order_id					path		string							true	"Order Identification"
+//	@Param			preparation_status_update	body		PreparationStatusUpdateRequest	true	"Order Request Params"
+//	@Success		200							{array}		dtos.OrderDisplayDTO
+//	@Failure		400							{string}	string	"when bad request"
+//	@Router			/order/{order_id}/preparation-status [get]
 func (cc *OrderController) OrderPreparationStatusUpdate(c httpserver.HTTPContext) {
 	orderId := c.Param("order_id")
 	request := &PreparationStatusUpdateRequest{}
