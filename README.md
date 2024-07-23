@@ -51,6 +51,7 @@ minikube start
 eval $(minikube docker-env)
 minikube addons enable volumesnapshots
 minikube addons enable csi-hostpath-driver
+minikube addons enable metrics-server
 docker buildx build -t tech-challenge-go-app .
 docker buildx build -t tech-challenge-migration ./migrations/
 kubectl apply -f k8s/configmap.yaml
@@ -58,6 +59,8 @@ kubectl apply -f k8s/secrets.yaml
 kubectl apply -f k8s/database.yaml
 kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/nodeport.yaml
+kubectl apply -f k8s/hpa.yaml
+kubectl apply -f k8s/metrics.yaml
 kubectl apply -f k8s/migration-job.yaml
 minikube service tech-challenge-nodeport --url
 ```

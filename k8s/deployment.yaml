@@ -47,4 +47,7 @@ spec:
             port: 8080
           initialDelaySeconds: 180
           periodSeconds: 15
+        resources:
+          requests:
+            cpu: 500m
 
