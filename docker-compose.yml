@@ -3,6 +3,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    image: tech-challenge-go-app
     restart: always
     ports:
       - "3003:8080"
@@ -44,18 +45,29 @@ services:
       db:
         condition: service_healthy
   migrate:
-    image: migrate/migrate
+    build:
+      context: ./migrations
+      dockerfile: Dockerfile
+    image: local-migrate
+    environment:
+      DB_URI: "postgres://tech-challenge-fase:tech-challenge-fase@db/tech-challenge-fase?sslmode=disable"
     restart: on-failure:5
-    command:
-      [
-        "-database",
-        "postgres://tech-challenge-fase:tech-challenge-fase@db/tech-challenge-fase?sslmode=disable",
-        "-path",
-        "/migrations",
-        "up",
-      ]
-    volumes:
-      - ./migrations:/migrations
     depends_on:
       db:
         condition: service_healthy
+  # migrate:
+  #   image: migrate/migrate
+  #   restart: on-failure:5
+  #   command:
+  #     [
+  #       "-database",
+  #       "postgres://tech-challenge-fase:tech-challenge-fase@db/tech-challenge-fase?sslmode=disable",
+  #       "-path",
+  #       "/migrations",
+  #       "up",
+  #     ]
+  #   volumes:
+  #     - ./migrations:/migrations
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
