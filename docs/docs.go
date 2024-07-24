@@ -79,13 +79,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "when invalid params",
+                        "description": "when bad request",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "406": {
-                        "description": "when invalid status",
+                        "description": "when invalid params or invalid object",
                         "schema": {
                             "type": "string"
                         }
@@ -131,9 +131,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/order/open/": {
+        "/order/checkout": {
             "post": {
-                "description": "initiate the order process",
+                "description": "make a checkout for an order",
                 "consumes": [
                     "application/json"
                 ],
@@ -143,60 +143,16 @@ const docTemplate = `{
                 "tags": [
                     "orders"
                 ],
-                "summary": "Open an order",
+                "summary": "Make an order checkout",
                 "parameters": [
                     {
-                        "description": "Open Order",
-                        "name": "order",
+                        "description": "Checkout",
+                        "name": "checkout",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.OpenOrderRequest"
+                            "$ref": "#/definitions/controllers.CheckoutRequest"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.OrderDTO"
-                        }
-                    },
-                    "400": {
-                        "description": "when invalid params",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "406": {
-                        "description": "when invalid status",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/order/{order_id}/add/item": {
-            "post": {
-                "description": "do a checkout on a given order",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Do a order checkout",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Open Order",
-                        "name": "order_id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -207,7 +163,207 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "when invalid status",
+                        "description": "when bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "406": {
+                        "description": "when invalid params or invalid object",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/display": {
+            "get": {
+                "description": "Get order list for a display",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get order list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "customer_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "order_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "preparation_status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.OrderDisplayDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "when bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/payment": {
+            "post": {
+                "description": "process the payment for an order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Process order payment",
+                "parameters": [
+                    {
+                        "description": "Payment",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.PaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "when bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "406": {
+                        "description": "when invalid params or invalid object",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{order_id}/payment-status": {
+            "get": {
+                "description": "get payment status by order_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get a payment status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Get Payment Status",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PaymentStatusDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "when bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "406": {
+                        "description": "when invalid params or invalid object",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{order_id}/preparation-status": {
+            "get": {
+                "description": "Update the preparation status for an order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Update order preparation status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order Identification",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Order Request Params",
+                        "name": "preparation_status_update",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.PreparationStatusUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.OrderDisplayDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "when bad request",
                         "schema": {
                             "type": "string"
                         }
@@ -247,13 +403,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "when invalid params",
+                        "description": "when bad request",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "when create process error",
+                        "description": "when create product process error",
                         "schema": {
                             "type": "string"
                         }
@@ -277,10 +433,22 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "List Product By Category",
+                        "description": "Product category",
                         "name": "category",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page defaults to 1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Size defaults to 50",
+                        "name": "size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -294,13 +462,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "when invalid params",
+                        "description": "when bad request",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "when list process error",
+                        "description": "when list products process error",
                         "schema": {
                             "type": "string"
                         }
@@ -323,7 +491,14 @@ const docTemplate = `{
                 "summary": "Update a product",
                 "parameters": [
                     {
-                        "description": "Update Product",
+                        "type": "string",
+                        "description": "Product identifier",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Product object",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -340,13 +515,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "when invalid params",
+                        "description": "when bad request",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "when update process error",
+                        "description": "when update product process error",
                         "schema": {
                             "type": "string"
                         }
@@ -367,13 +542,11 @@ const docTemplate = `{
                 "summary": "Delete a product",
                 "parameters": [
                     {
-                        "description": "Delete Product",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controllers.ProductRequest"
-                        }
+                        "type": "string",
+                        "description": "Product identifier",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -384,13 +557,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "when invalid params",
+                        "description": "when when bad request",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "when delete process error",
+                        "description": "when delete product process error",
                         "schema": {
                             "type": "string"
                         }
@@ -400,6 +573,39 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.CheckoutRequest": {
+            "type": "object",
+            "properties": {
+                "customer_id": {
+                    "type": "string"
+                },
+                "products_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "controllers.PaymentRequest": {
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "type": "string"
+                },
+                "payment_status": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.PreparationStatusUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "preparation_status": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.ProductRequest": {
             "type": "object",
             "properties": {
@@ -428,6 +634,9 @@ const docTemplate = `{
                 },
                 "method": {
                     "$ref": "#/definitions/dtos.MethodType"
+                },
+                "orderId": {
+                    "type": "string"
                 },
                 "paymentLink": {
                     "type": "string"
@@ -476,37 +685,48 @@ const docTemplate = `{
                 "CREDIT_CARD"
             ]
         },
-        "dtos.OrderDTO": {
+        "dtos.OrderDisplayDTO": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "customer_id": {
+                    "type": "string"
+                },
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dtos.OrderItemDTO"
+                        "$ref": "#/definitions/dtos.OrderItemDisplayDTO"
                     }
                 },
                 "order_id": {
                     "type": "string"
                 },
-                "status": {
+                "preparation_status": {
                     "type": "string"
-                },
-                "total": {
-                    "type": "number"
                 }
             }
         },
-        "dtos.OrderItemDTO": {
+        "dtos.OrderItemDisplayDTO": {
             "type": "object",
             "properties": {
-                "amount": {
-                    "type": "number"
-                },
                 "product_name": {
                     "type": "string"
                 },
                 "quantity": {
                     "type": "integer"
+                }
+            }
+        },
+        "dtos.PaymentStatusDTO": {
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "type": "string"
+                },
+                "payment_status": {
+                    "type": "string"
                 }
             }
         },
@@ -520,7 +740,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "image": {
                     "type": "string"
@@ -530,14 +750,6 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
-                }
-            }
-        },
-        "request.OpenOrderRequest": {
-            "type": "object",
-            "properties": {
-                "customer_id": {
-                    "type": "string"
                 }
             }
         }
