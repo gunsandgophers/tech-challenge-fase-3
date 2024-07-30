@@ -190,28 +190,6 @@ const docTemplate = `{
                     "orders"
                 ],
                 "summary": "Get order list",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "createdAt",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "customer_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "order_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "preparation_status",
-                        "in": "query"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -322,7 +300,7 @@ const docTemplate = `{
             }
         },
         "/order/{order_id}/preparation-status": {
-            "get": {
+            "put": {
                 "description": "Update the preparation status for an order",
                 "consumes": [
                     "application/json"
@@ -353,14 +331,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dtos.OrderDisplayDTO"
-                            }
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "when bad request",
