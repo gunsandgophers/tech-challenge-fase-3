@@ -36,7 +36,7 @@ to create a migration to add a user
 
 ### Swagger
 
-URL to access running Swagger is <http://localhost:3003/api/v1/swagger/index.html>
+URL to access running Swagger is `/api/v1/swagger/index.html`
 
 ## Kubernetes
 
