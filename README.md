@@ -58,6 +58,8 @@ kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/nodeport.yaml
 kubectl apply -f k8s/hpa.yaml
 kubectl apply -f k8s/metrics.yaml
+
+#wait for postgres pod to finish
 kubectl apply -f k8s/migration-job.yaml
 minikube service tech-challenge-nodeport --url
 ```
