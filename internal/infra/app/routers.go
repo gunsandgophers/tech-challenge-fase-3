@@ -33,7 +33,7 @@ func registerRouters(app *APIApp) {
 	app.httpServer.POST("/product", productController.CreateProduct)
 	app.httpServer.PUT("/product/:id", productController.UpdateProduct)
 	app.httpServer.DELETE("/product/:id", productController.DeleteProduct)
-	app.httpServer.GET("/products/:category", productController.ListProductsByCategory)
+	app.httpServer.GET("/product/:category", productController.ListProductsByCategory)
 
 	//orders
 	app.httpServer.POST("/order/checkout", orderController.Checkout)

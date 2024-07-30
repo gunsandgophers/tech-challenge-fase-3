@@ -131,7 +131,6 @@ func (cc *OrderController) Payment(c httpserver.HTTPContext) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			order	query		dtos.OrderDisplayDTO	false	"Order query"
 //	@Success		200		{array}		dtos.OrderDisplayDTO
 //	@Failure		400		{string}	string	"when bad request"
 //	@Router			/order/display [get]
@@ -158,9 +157,9 @@ func (cc *OrderController) OrderDisplayList(c httpserver.HTTPContext) {
 //	@Produce		json
 //	@Param			order_id					path		string							true	"Order Identification"
 //	@Param			preparation_status_update	body		PreparationStatusUpdateRequest	true	"Order Request Params"
-//	@Success		200							{array}		dtos.OrderDisplayDTO
+//	@Success		204
 //	@Failure		400							{string}	string	"when bad request"
-//	@Router			/order/{order_id}/preparation-status [get]
+//	@Router			/order/{order_id}/preparation-status [put]
 func (cc *OrderController) OrderPreparationStatusUpdate(c httpserver.HTTPContext) {
 	orderId := c.Param("order_id")
 	request := &PreparationStatusUpdateRequest{}
