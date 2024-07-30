@@ -8,6 +8,10 @@ Links:
 
 <https://miro.com/app/board/uXjVKQtHwOA=/>
 
+## Architecture
+
+![TechChallengeApp Kubernetes](https://github.com/user-attachments/assets/c1b1a50e-9edd-4fff-bb7e-a459a668d8ef)
+
 ## Run project
 
 To run the application it is necessary to execute the command `make start`
