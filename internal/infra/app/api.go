@@ -15,6 +15,7 @@ type APIApp struct {
 	httpServer         *httpserver.GinHTTPServerAdapter
 	connection         *database.PGXConnectionAdapter
 	customerRepository *repositories.CustomerRepositoryDB
+	customerService *services.AwsCustomerService
 	productRepository  *repositories.ProductRepositoryDB
 	orderRepository    *repositories.OrderRepositoryDB
 	orderDisplayListQuery *queries.OrderDisplayListQueryDB
