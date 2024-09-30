@@ -42,5 +42,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: gunsandgophers/tech-challenge-go-app:latest
+          tags: raffiuds/tech-challenge-go-app:latest
           context: .
