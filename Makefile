@@ -3,6 +3,9 @@ export DB_URL=postgres://tech_challenge_fase_3:JV4Nv1iBaw9uns4@tech-challenge-fa
 build:
 	docker compose up -d --build
 
+build/login:
+	aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 249752625560.dkr.ecr.us-east-1.amazonaws.com
+
 build/prod:
 	docker buildx build -t tech-challenge-go-app .
 
