@@ -35,7 +35,8 @@ jobs:
       - name: Login to ECR
         uses: docker/login-action@v3
         with:
-          registry: 249752625560.dkr.ecr.us-east-1.amazonaws.com
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
