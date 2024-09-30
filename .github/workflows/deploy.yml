@@ -46,7 +46,7 @@ jobs:
           context: .
 
       - name: Update Kube Config
-        run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region us-east-1
+        run: aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region us-east-1
   
       - name: Kube Apply
         run: |
