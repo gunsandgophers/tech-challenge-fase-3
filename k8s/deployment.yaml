@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: tech-challenge-api
-        image: tech-challenge-go-app
-        imagePullPolicy: Never
+        image: 249752625560.dkr.ecr.us-east-1.amazonaws.com/gunsandgophers/tech-challenge-go-app:latest
         ports:
         - containerPort: 8080
+          hostPort: 8080
         env:
         - name: DB_NAME
           valueFrom:
