@@ -29,11 +29,5 @@ jobs:
       - name: Login Docker Hub
         run: make build/login
 
-      - name: Build Image
-        run: make build/prod
-
-      - name: Add Tag
-        run: make build/tag
-
-      - name: Push Image
-        run: make build/push
+      - name: Build Image, add tag and push image
+        run: make build/prod && make build/tag && make build/push
