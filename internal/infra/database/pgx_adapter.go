@@ -15,7 +15,7 @@ type PGXConnectionAdapter struct {
 
 func NewPGXConnectionAdapter() *PGXConnectionAdapter {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
-		"password=%s dbname=%s sslmode=disable",
+		"password=%s dbname=%s",
 		config.DB_HOST, config.DB_POST, config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
 
 	pool, err := pgxpool.New(context.Background(), psqlInfo)
@@ -24,7 +24,7 @@ func NewPGXConnectionAdapter() *PGXConnectionAdapter {
 		panic(1)
 	}
 
-	return &PGXConnectionAdapter{pool: pool};
+	return &PGXConnectionAdapter{pool: pool}
 }
 
 func (p *PGXConnectionAdapter) QueryRow(sql string, args ...interface{}) RowDB {
@@ -37,7 +37,7 @@ func (p *PGXConnectionAdapter) Query(sql string, args ...interface{}) (RowsDB, e
 
 func (p *PGXConnectionAdapter) Exec(sql string, args ...interface{}) error {
 	_, err := p.pool.Exec(context.Background(), sql, args...)
-	return err;
+	return err
 }
 
 func (p *PGXConnectionAdapter) Close() {
