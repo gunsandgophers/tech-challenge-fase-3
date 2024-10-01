@@ -10,7 +10,8 @@ Links:
 
 ## Architecture
 
-![TechChallengeApp Kubernetes](https://github.com/user-attachments/assets/eb8f078b-6871-48c8-9d8b-c77d07440f10)
+
+![TechChallengeApp Kubernetes](https://github.com/user-attachments/assets/5032e83b-b429-4d6b-a41a-eb916e71fac5)
 
 ## Run project
 
