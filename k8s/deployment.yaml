@@ -14,6 +14,8 @@ spec:
       labels:
         app: tech-challenge
     spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: tech-challenge-api
         image: raffiuds/tech-challenge-go-app:latest
